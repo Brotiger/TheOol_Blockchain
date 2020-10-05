@@ -21,6 +21,17 @@ class userValidator:
             return 'Max email size ' + str(maxSize) + ' characters'
         return False
 
+    def password(self, name):
+        minSize = 30
+
+        if (not name in self.__params) or (not len(self.__params[name])):
+            return 'Password required'
+        elif not (type(self.__params[name]) is str):
+            return 'Invalid type'
+        elif (len(self.__params[name]) > minSize):
+            return 'Min password size ' + str(minSize) + ' characters'
+        return False
+
     def phone(self, name):
         maxSize = 15
         reg = r"^[0-9]+$"

@@ -1,12 +1,10 @@
-import requests
-import json
-
-import ciphers.AES as AES
+# coding: utf8
+import components.http as http
 
 def main():
     data = {}
 
-    passwordAES = input("Password: ")
+    data['password'] = input("Password: ")
     data['first_name'] = input("First name*: ")
     data['last_name'] = input("Last name*: ")
     data['middle_name'] = input("Middle name: ")
@@ -20,14 +18,9 @@ def main():
     data['phone'] = input("Phone: ")
     data['messengers'] = input("Messengers: ").split(', ')
 
-    encryptedData = AES.encrypt(json.dumps(data), passwordAES)
+    input("Для отправка введенных данных нажмите Enter")
 
-    dataPost = {
-        "aes_password": passwordAES,
-        "data": encryptedData
-    }
-    
-    response = requests.post('http://192.168.99.100:80/api/reg/user', json=dataPost)
-    print(response.json())
+    httpObj = http.http()
+    httpObj.send("http://192.168.99.100:80/api/reg/user",data)
 
 main()

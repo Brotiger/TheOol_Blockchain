@@ -1,3 +1,5 @@
 flask
 flask-sqlalchemy
 pycryptodome
+rsa
+flask_wtf
