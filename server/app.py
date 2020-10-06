@@ -4,12 +4,15 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 import controllers.userController as userController
+import ciphers.RSA as RSA
 
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "mariadb://root:123456@db/users"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+rsaObj = RSA.rsaCipher()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,10 +35,20 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.id 
-        
+
+@app.route('/api/get/rsa', methods=['POST'])
+def getRSA():
+    rsaObj.createKeys()
+    pk = rsaObj.getPubKey()
+
+    resData = {
+            "pub_key": pk,
+        }
+    return make_response(resData)
+
 @app.route('/api/reg/user', methods=['POST'])
 def regUser():
-    return userController.Reg(request.data)
+    return userController.Reg(request.data, rsaObj)
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')

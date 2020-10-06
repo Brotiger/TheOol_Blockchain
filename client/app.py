@@ -2,6 +2,10 @@
 import components.http as http
 
 def main():
+    httpObj = http.http()
+
+    httpObj.getKey()
+
     data = {}
 
     data['password'] = input("Password: ")
@@ -20,7 +24,6 @@ def main():
 
     input("Для отправка введенных данных нажмите Enter")
 
-    httpObj = http.http()
-    httpObj.send("http://192.168.99.100:80/api/reg/user",data)
+    httpObj.sendData("http://192.168.99.100:80/api/reg/user",data)
 
 main()

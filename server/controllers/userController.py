@@ -2,9 +2,10 @@ import validators.userValidator as validators
 from flask import make_response
 import components.http as http
 
-def Reg(userData):
+#Передаем rsa объект для того что бы извлечь из него закрытый ключ
+def Reg(userData, rsaObj):
     errorsObj = {}
-    httpObj = http.http()
+    httpObj = http.http(rsaObj)
 
     try:
         userData = httpObj.dataDecrypt(userData)#дешифровка
@@ -67,23 +68,23 @@ def Reg(userData):
         #Если ошибок нет
         if not len(errorsObj):
 
-            newUser = {}
+            #newUser = {}
 
             #подготовка полей для записи в бд
-            newUser['password'] = userData['password'] if 'password' in userData else ''
-            newUser['email'] = userData['email'] if 'email' in userData else ''
-            newUser['phone'] = userData['phone'] if 'phone' in userData else ''
-            newUuser['firstName'] = userData['first_name'] if 'first_name' in userData else ''
-            newUser['lastName'] = userData['last_name'] if 'last_name' in userData else ''
-            newUser['middleName'] = userData['middle_name'] if 'middle_name' in userData else ''
-            newUser['dateOfBirth'] = userData['date_of_birth'] if 'date_of_birth' in userData else ''
-            newUser['country_and_place_of_birth'] = userData['country_and_place_of_birth'] if 'country_and_place_of_birth' in userData else ''
-            newUser['nationality'] = userData['nationality'] if 'nationality' in userData else ''
-            newUser['country_of_residence'] = userData['country_of_residence'] if 'country_of_residence' in userData else ''
-            newUser['address'] = userData['address'] if 'address' in userData else ''
-            newUser['zip_code'] = userData['zip_code'] if 'zip_code' in userData else ''
-            newUser['facebook'] = userData['facebook'] if 'facebook' in userData else ''
-            newUser['messengers'] = userData['messengers'] if 'messengers' in userData else ''
+           # newUser['password'] = userData['password'] if 'password' in userData else ''
+           # newUser['email'] = userData['email'] if 'email' in userData else ''
+           # newUser['phone'] = userData['phone'] if 'phone' in userData else ''
+           # newUuser['firstName'] = userData['first_name'] if 'first_name' in userData else ''
+           # newUser['lastName'] = userData['last_name'] if 'last_name' in userData else ''
+           # newUser['middleName'] = userData['middle_name'] if 'middle_name' in userData else ''
+           # newUser['dateOfBirth'] = userData['date_of_birth'] if 'date_of_birth' in userData else ''
+           # newUser['country_and_place_of_birth'] = userData['country_and_place_of_birth'] if 'country_and_place_of_birth' in userData else ''
+           # newUser['nationality'] = userData['nationality'] if 'nationality' in userData else ''
+           # newUser['country_of_residence'] = userData['country_of_residence'] if 'country_of_residence' in userData else ''
+           # newUser['address'] = userData['address'] if 'address' in userData else ''
+           # newUser['zip_code'] = userData['zip_code'] if 'zip_code' in userData else ''
+           # newUser['facebook'] = userData['facebook'] if 'facebook' in userData else ''
+           # newUser['messengers'] = userData['messengers'] if 'messengers' in userData else ''
 
             resData = {
                 'success': True

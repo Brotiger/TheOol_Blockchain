@@ -3,20 +3,25 @@ import string
 import random
 
 import ciphers.AES as AES
+import ciphers.RSA as RSA
 
 class http:
 
-    __aesObj = {}
+   # __aesObj = {}
+   # __rsaObj = {}
 
-    def __init__(self):
+    def __init__(self, rsaObj):
 
         self.__aesObj = AES.aesCipher()
+        self.__rsaObj = rsaObj
 
     def dataDecrypt(self, res):
 
         params = json.loads(res)
 
         AESPassword = params['aes_password']
+
+        AESPassword = self.__rsaObj.decrypt(AESPassword)
 
         return json.loads(self.__aesObj.decrypt(params['data'], AESPassword))
 
