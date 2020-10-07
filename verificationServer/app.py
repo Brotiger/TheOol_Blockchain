@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+
+'''
+	Название: verificationServer;
+	Описание: Программа отвечает за регистрацию потенциального инвестора в очередь на верификацию;
+	Автор: Берестнев Дмитрий Дмитриевич;
+'''
+
 from flask import Flask, make_response, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -39,10 +46,10 @@ class User(db.Model):
 @app.route('/api/get/rsa', methods=['POST'])
 def getRSA():
     rsaObj.createKeys()
-    pk = rsaObj.getPubKey()
+    rsaKey = rsaObj.getPubKey()
 
     resData = {
-            "pub_key": pk,
+            "rsa_key": rsaKey,
         }
     return make_response(resData)
 

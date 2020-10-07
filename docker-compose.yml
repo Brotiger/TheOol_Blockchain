@@ -1,10 +1,10 @@
 version: "3"
 services:
  web:
-  build: ./server
+  build: ./verificationServer
   container_name: blockchain_web
   volumes:
-    - ~/Documents/DockerVolumes/TheOol/Blockchain/server:/usr/src/app
+    - ~/Documents/DockerVolumes/TheOol/Blockchain/verificationServer:/usr/src/app
   restart: always
   ports:
     - 80:5000

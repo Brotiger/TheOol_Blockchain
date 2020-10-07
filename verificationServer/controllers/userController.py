@@ -98,5 +98,6 @@ def Reg(userData, rsaObj):
             }
 
     finally:
+        rsaObj.setPubKeyClient(userData['rsa_key'])
         res = httpObj.dataEncrypt(resData)
         return make_response(res)

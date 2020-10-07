@@ -11,13 +11,18 @@ class http:
         self.__rsaObj = RSA.rsaCipher()
 
     def sendData(self, url, data):
+
+        self.__rsaObj.createKeys()
+        data["rsa_key"] = self.__rsaObj.getPubKeyClient()
+
         passwordAES = self.__randompassword()
+
         encryptedData = self.__aesObj.encrypt(json.dumps(data), passwordAES)
 
         passwordAES = self.__rsaObj.encrypt(passwordAES)
 
         dataPost = {
-            "aes_password": passwordAES,
+            "aes_key": passwordAES,
             "data": encryptedData
         }
         response = requests.post(url, json=dataPost)
@@ -28,7 +33,7 @@ class http:
     def getKey(self):
         
         response = requests.post("http://192.168.99.100:80/api/get/rsa")
-        self.__rsaObj.setPubKey(response.json()['pub_key'])
+        self.__rsaObj.setPubKeyServer(response.json()['rsa_key'])
 
     def __randompassword(self):
         chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
@@ -38,7 +43,9 @@ class http:
     def dataDecrypt(self, res):
 
         params = res.json()
+        
+        AESPassword = params['aes_key']
 
-        AESPassword = params['aes_password']
+        AESPassword = self.__rsaObj.decrypt(AESPassword)
 
         return json.loads(self.__aesObj.decrypt(params['data'], AESPassword))

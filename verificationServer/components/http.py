@@ -3,12 +3,8 @@ import string
 import random
 
 import ciphers.AES as AES
-import ciphers.RSA as RSA
 
 class http:
-
-   # __aesObj = {}
-   # __rsaObj = {}
 
     def __init__(self, rsaObj):
 
@@ -19,7 +15,7 @@ class http:
 
         params = json.loads(res)
 
-        AESPassword = params['aes_password']
+        AESPassword = params['aes_key']
 
         AESPassword = self.__rsaObj.decrypt(AESPassword)
 
@@ -30,8 +26,10 @@ class http:
         passwordAES = self.__randompassword()
         encryptedData = self.__aesObj.encrypt(json.dumps(data), passwordAES)
 
+        passwordAES = self.__rsaObj.encrypt(passwordAES)
+
         dataPost = {
-            "aes_password": passwordAES,
+            "aes_key": passwordAES,
             "data": encryptedData
         }
             
