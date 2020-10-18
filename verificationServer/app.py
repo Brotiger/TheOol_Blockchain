@@ -24,8 +24,8 @@ class Users(db.Model):
     first_name = db.Column(db.String(80), unique=True, nullable=False)
     last_name = db.Column(db.String(80), unique=True, nullable=False)
 
-db.session.add(Users(first_name="asd", last_name=""))
-db.session.commit()
+#db.session.add(Users(first_name="asd", last_name=""))
+#db.session.commit()
 
 rsaObj = RSA.rsaCipher()
 

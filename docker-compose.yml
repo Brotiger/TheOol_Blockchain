@@ -4,7 +4,7 @@ services:
   build: ./verificationServer
   container_name: blockchain_web
   volumes:
-    - ~/Documents/DockerVolumes/TheOol/Blockchain/verificationServer:/usr/src/app
+    - ./verificationServer:/usr/src/app
   restart: always
   ports:
     - 80:5000
@@ -18,7 +18,7 @@ services:
   ports:
     - 3306:3306
   environment:
-    MYSQL_ROOT_PASSWORD: 123456
+    MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
  adminer:
   image: adminer
   container_name: blockchain_db_adminer

@@ -5,8 +5,6 @@ def main():
 
     httpObj = http.http()
 
-    httpObj.getKey()
-
     data = {}
 
     data['password'] = input("Password: ")
@@ -25,6 +23,6 @@ def main():
 
     input("Для отправка введенных данных нажмите Enter")
 
-    httpObj.sendData("http://192.168.99.100:80/api/reg/user",data)
+    httpObj.sendData("http://127.0.0.1:80/api/reg/user",data)
 
 main()

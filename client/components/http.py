@@ -12,6 +12,7 @@ class http:
 
     def sendData(self, url, data):
 
+        self.__getKey()
         self.__rsaObj.createKeys()
         data["rsa_key"] = self.__rsaObj.getPubKeyClient()
 
@@ -30,9 +31,9 @@ class http:
         response = self.dataDecrypt(response)
         print(response)
     
-    def getKey(self):
+    def __getKey(self):
         
-        response = requests.post("http://192.168.99.100:80/api/get/rsa")
+        response = requests.post("http://127.0.0.1:80/api/get/rsa")
         self.__rsaObj.setPubKeyServer(response.json()['rsa_key'])
 
     def __randompassword(self):
