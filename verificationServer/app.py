@@ -7,41 +7,27 @@
 '''
 
 from flask import Flask, make_response, request
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 import controllers.userController as userController
 import ciphers.RSA as RSA
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "mariadb://root:123456@db/users"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://server:v9bumEc1G9c8HBDO4QtHsFI8NNWcEh@192.168.99.100:3306/verification'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-rsaObj = RSA.rsaCipher()
-
-class User(db.Model):
+class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(80), unique=True, nullable=False)
+    last_name = db.Column(db.String(80), unique=True, nullable=False)
 
-    email = db.Column(db.String(256), nullable=False)
-    phone = db.Column(db.String(15), nullable=True)
-    firstName = db.Column(db.String(30), nullable=False)
-    lastName = db.Column(db.String(30), nullable=False)
-    middleName = db.Column(db.String(30), nullable=True)
-    dateOfBirth = db.Column(db.String(), nullable=False)
-    countryAndPlaceOfBirth = db.Column(db.String(150), nullable=True)
-    nationality = db.Column(db.String(30), nullable=True)
-    countryOfResidence = db.Column(db.String(30), nullable=False)
-    address = db.Column(db.String(30), nullable=False)
-    zipCode = db.Column(db.String(9), nullable=False)
-    facebook = db.Column(db.String(50), nullable=True)
-    messengers = db.Column(db.String(50), nullable=True)
+db.session.add(Users(first_name="asd", last_name=""))
+db.session.commit()
 
-    date = db.Column(db.DateTime, default=datetime.utcnow)
-
-    def __repr__(self):
-        return '<User %r>' % self.id 
+rsaObj = RSA.rsaCipher()
 
 @app.route('/api/get/rsa', methods=['POST'])
 def getRSA():

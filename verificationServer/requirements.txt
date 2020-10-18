@@ -3,3 +3,4 @@ flask-sqlalchemy
 pycryptodome
 rsa
 flask_wtf
+mysql-connector-python
