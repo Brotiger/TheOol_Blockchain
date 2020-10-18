@@ -10,18 +10,26 @@ services:
     - 80:5000
   working_dir: /usr/src/app
   command: python app.py
+  links:
+    - "db"
  db:
   image: mysql
   container_name: blockchain_db
   command: --default-authentication-plugin=mysql_native_password
+  volumes:
+    - ./verificationServer/databases:/var/lib/mysql
   restart: always
   ports:
     - 3306:3306
   environment:
     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  cap_add:
+      - SYS_NICE
  adminer:
   image: adminer
   container_name: blockchain_db_adminer
   restart: always
   ports:
     - 6080:8080
+  links:
+    - "db"
