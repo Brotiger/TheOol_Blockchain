@@ -4,7 +4,7 @@ services:
   build: ./verificationServer
   container_name: blockchain_web
   volumes:
-    - ${SERVER_DIR}/verificationServer:/usr/src/app
+    - ${VOLUME_DIR}/verificationServer:/usr/src/app
   restart: always
   ports:
     - 80:5000
@@ -33,3 +33,6 @@ services:
     - 6080:8080
   links:
     - "db"
+volumes:
+  mysql:
+    driver: local

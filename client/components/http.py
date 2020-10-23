@@ -4,6 +4,7 @@ import json
 import requests
 import ciphers.AES as AES
 import ciphers.RSA as RSA
+import os
 
 class http:
     def __init__(self):
@@ -33,7 +34,7 @@ class http:
     
     def __getKey(self):
         
-        response = requests.post("http://127.0.0.1:80/api/get/rsa")
+        response = requests.post("http://" + os.environ.get('VER_SERVER_IP') + ":80/api/get/rsa")
         self.__rsaObj.setPubKeyServer(response.json()['rsa_key'])
 
     def __randompassword(self):

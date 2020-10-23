@@ -1,6 +1,6 @@
 from base64 import b64encode, b64decode
 import hashlib
-from Cryptodome.Cipher import AES
+from Crypto.Cipher import AES #для linux Cryptodome
 import os
 from Crypto.Random import get_random_bytes
 

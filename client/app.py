@@ -1,5 +1,6 @@
 # coding: utf8
 import components.http as http
+import os
 
 def main():
 
@@ -23,6 +24,6 @@ def main():
 
     input("Для отправка введенных данных нажмите Enter")
 
-    httpObj.sendData("http://127.0.0.1:80/api/reg/user",data)
+    httpObj.sendData("http://" + os.environ.get('VER_SERVER_IP') + ":80/api/reg/user",data)
 
 main()
