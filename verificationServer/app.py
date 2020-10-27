@@ -5,13 +5,11 @@
 	Описание: Программа отвечает за регистрацию потенциального инвестора в очередь на верификацию;
 	Автор: Берестнев Дмитрий Дмитриевич;
 '''
-
 from flask import Flask, make_response, request
 from datetime import datetime
 
 import controllers.userController as userController
 import ciphers.RSA as RSA
-from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 

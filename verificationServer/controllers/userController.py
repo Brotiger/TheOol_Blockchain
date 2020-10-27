@@ -1,9 +1,12 @@
 import validators.userValidator as validators
 from flask import make_response
 import components.http as http
+import models.Users as mUsers
+import json
 
 #Передаем rsa объект для того что бы извлечь из него закрытый ключ
 def Reg(userData, rsaObj):
+
     errorsObj = {}
     httpObj = http.http(rsaObj)
 
@@ -67,6 +70,71 @@ def Reg(userData, rsaObj):
 
         #Если ошибок нет
         if not len(errorsObj):
+            sql = ""
+            sql_left = "INSERT INTO Users ("
+            sql_right = " ) VALUES ( "
+
+            if('password' in userData):
+                sql_left += "password" + ","
+                sql_right += "'" + userData['password'] + "',"
+
+            if('email' in userData):
+                sql_left += "email" + ","
+                sql_right += "'" + userData['email'] + "',"
+
+            if('phone' in userData):
+                sql_left += "phone" + ","
+                sql_right += "'" + userData['phone'] + "',"
+
+            if('first_name' in userData):
+                sql_left += "first_name" + ","
+                sql_right += "'" + userData['first_name'] + "',"
+
+            if('last_name' in userData):
+                sql_left += "last_name" + ","
+                sql_right += "'" + userData['last_name'] + "',"
+
+            if('middle_name' in userData):
+                sql_left += "middle_name" + ","
+                sql_right += "'" + userData['middle_name'] + "',"
+
+            if('date_of_birth' in userData):
+                sql_left += "date_of_birth" + ","
+                sql_right += "'" + userData['date_of_birth'] + "',"
+            
+            if('country_and_place_of_birth' in userData):
+                sql_left += "country_and_place_of_birth" + ","
+                sql_right += "'" + userData['country_and_place_of_birth'] + "',"
+
+            if('nationality' in userData):
+                sql_left += "nationality" + ","
+                sql_right += "'" + userData['nationality'] + "',"
+
+            if('country_of_residence' in userData):
+                sql_left += "country_of_residence" + ","
+                sql_right += "'" + userData['country_of_residence'] + "',"
+
+            if('address' in userData):
+                sql_left += "address" + ","
+                sql_right += "'" + userData['address'] + "',"
+
+            if('zip_code' in userData):
+                sql_left += "zip_code" + ","
+                sql_right += "'" + userData['zip_code'] + "',"
+
+            if('messengers' in userData):
+                sql_left += "messengers" + ","
+                sql_right += "'" + json.dumps(userData['messengers']) + "',"
+            
+            sql_left = sql_left[:-1]
+            sql_right = sql_right[:-1]
+
+            sql_right += ")"
+
+            sql = sql_left + sql_right
+            
+            objUsers = mUsers.Users()
+            objUsers.add(sql)
 
             resData = {
                 'success': True,

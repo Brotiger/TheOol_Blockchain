@@ -42,7 +42,7 @@ pip install --no-cache-dir -r ./client/requirements.txt
 
 export VOLUME_DIR=Путь до директории где лежит данный файл (например export VOLUME_DIR=/c/Users/Brotiger/Documents/DockerVolumes/TheOol/theoolias, узнать путь до данной директории можно командой - pwd в терминале gitBash)
 export MYSQL_ROOT_PASSWORD=password
-export VER_SERVER_IP=192.168.99.100
+export VER_SERVER_IP=192.168.99.100 /127.0.0.1 - Для Linux
 
 6)Запускаем сам докер - иконку докера должна быть где то на рабочем столе и должна называться - Docker Quickstart Terminal
 
