@@ -23,7 +23,6 @@ def Reg(userData, rsaObj):
         userValidatorObj = validators.userValidator(userData)
 
         #Валидация
-        passwordResult = userValidatorObj.password('password')
         emailResult = userValidatorObj.email('email')
         phoneResult = userValidatorObj.phone('phone')
         fNameResult = userValidatorObj.fName('first_name')
@@ -36,11 +35,12 @@ def Reg(userData, rsaObj):
         addressResult = userValidatorObj.address('address')
         zipCodeResult = userValidatorObj.zipCode('zip_code')
         facebookResult = userValidatorObj.faceBook('facebook')
-        messengersResult = userValidatorObj.messengers('messengers')
+        twitterResult = userValidatorObj.twitter('twitter')
+        whatsappResult = userValidatorObj.whatsapp('whatsapp')
+        telegramResult = userValidatorObj.telegram('telegram')
+        passportResult = userValidatorObj.passport('passport')
 
         #Формирование списка ошибок на основе результатов валидации
-        if passwordResult:
-            errorsObj['password'] = passwordResult
         if emailResult:
             errorsObj['email'] = emailResult
         if phoneResult:
@@ -65,76 +65,19 @@ def Reg(userData, rsaObj):
             errorsObj['zip_code'] = zipCodeResult
         if facebookResult:
             errorsObj['facebook'] = facebookResult
-        if messengersResult:
-            errorsObj['messengers'] = messengersResult
+        if twitterResult:
+            errorsObj['twitter'] = twitterResult
+        if telegramResult:
+            errorsObj['telegram'] = telegramResult
+        if whatsappResult:
+            errorsObj['whatsapp'] = whatsappResult
+        if passportResult:
+            errorsObj['passport'] = passportResult
 
         #Если ошибок нет
         if not len(errorsObj):
-            sql = ""
-            sql_left = "INSERT INTO Users ("
-            sql_right = " ) VALUES ( "
-
-            if('password' in userData):
-                sql_left += "password" + ","
-                sql_right += "'" + userData['password'] + "',"
-
-            if('email' in userData):
-                sql_left += "email" + ","
-                sql_right += "'" + userData['email'] + "',"
-
-            if('phone' in userData):
-                sql_left += "phone" + ","
-                sql_right += "'" + userData['phone'] + "',"
-
-            if('first_name' in userData):
-                sql_left += "first_name" + ","
-                sql_right += "'" + userData['first_name'] + "',"
-
-            if('last_name' in userData):
-                sql_left += "last_name" + ","
-                sql_right += "'" + userData['last_name'] + "',"
-
-            if('middle_name' in userData):
-                sql_left += "middle_name" + ","
-                sql_right += "'" + userData['middle_name'] + "',"
-
-            if('date_of_birth' in userData):
-                sql_left += "date_of_birth" + ","
-                sql_right += "'" + userData['date_of_birth'] + "',"
-            
-            if('country_and_place_of_birth' in userData):
-                sql_left += "country_and_place_of_birth" + ","
-                sql_right += "'" + userData['country_and_place_of_birth'] + "',"
-
-            if('nationality' in userData):
-                sql_left += "nationality" + ","
-                sql_right += "'" + userData['nationality'] + "',"
-
-            if('country_of_residence' in userData):
-                sql_left += "country_of_residence" + ","
-                sql_right += "'" + userData['country_of_residence'] + "',"
-
-            if('address' in userData):
-                sql_left += "address" + ","
-                sql_right += "'" + userData['address'] + "',"
-
-            if('zip_code' in userData):
-                sql_left += "zip_code" + ","
-                sql_right += "'" + userData['zip_code'] + "',"
-
-            if('messengers' in userData):
-                sql_left += "messengers" + ","
-                sql_right += "'" + json.dumps(userData['messengers']) + "',"
-            
-            sql_left = sql_left[:-1]
-            sql_right = sql_right[:-1]
-
-            sql_right += ")"
-
-            sql = sql_left + sql_right
-            
             objUsers = mUsers.Users()
-            objUsers.add(sql)
+            objUsers.create(userData)
 
             resData = {
                 'success': True,

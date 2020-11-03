@@ -21,17 +21,6 @@ class userValidator:
             return 'Max email size ' + str(maxSize) + ' characters'
         return False
 
-    def password(self, name):
-        minSize = 30
-
-        if (not name in self.__params) or (not len(self.__params[name])):
-            return 'Password required'
-        elif not (type(self.__params[name]) is str):
-            return 'Invalid type'
-        elif (len(self.__params[name]) > minSize):
-            return 'Min password size ' + str(minSize) + ' characters'
-        return False
-
     def phone(self, name):
         maxSize = 15
         reg = r"^[0-9]+$"
@@ -182,16 +171,35 @@ class userValidator:
         elif (len(self.__params[name]) > maxSize):
             return 'Max Facebook address size ' + str(maxSize) + ' characters'
         return False
-    def messengers(self ,name):
 
-        messengersType = ["Twitter", "WhatsApp", "Telegram"]
-
-        if (not name in self.__params) or (not len(self.__params[name])):
+    def telegram(self, name):
+        if (not name in self.__params):
             return False
-        elif not (type(self.__params[name]) is list):
-            return 'Incorrect messengers type'
-        else:
-            for key in self.__params[name]:
-                if not key in messengersType:
-                    return 'Incorrect messengers type'
+        if not(type(self.__params[name]) is bool):
+            return 'Invalid type'
+        return False
+
+    def twitter(self, name):
+        if (not name in self.__params):
+            return False
+        if not(type(self.__params[name]) is bool):
+            return 'Invalid type'
+        return False
+
+    def whatsapp(self, name):
+        if (not name in self.__params):
+            return False
+        if not(type(self.__params[name]) is bool):
+            return 'Invalid type'
+        return False
+
+    def passport(self, name):
+        
+        ext = ['png', 'jpg']
+
+        if (not name in self.__params or not 'ext' in self.__params[name] or not 'file' in self.__params[name] or not 'name' in self.__params[name]):
+            return 'passport required'
+
+        if not (self.__params[name]['ext'] in ext):
+            return 'Invalid image extension'
         return False
