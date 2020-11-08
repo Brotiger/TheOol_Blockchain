@@ -42,12 +42,34 @@ pip install --no-cache-dir -r ./client/requirements.txt
 
 export VOLUME_DIR=Путь до директории где лежит данный файл (например export VOLUME_DIR=/c/Users/Brotiger/Documents/DockerVolumes/TheOol/theoolias, узнать путь до данной директории можно командой - pwd в терминале gitBash)
 export MYSQL_ROOT_PASSWORD=password
-export VER_SERVER_IP=192.168.99.100 /127.0.0.1 - Для Linux
 
 6)Запускаем сам докер - иконку докера должна быть где то на рабочем столе и должна называться - Docker Quickstart Terminal
 
-7)Запускаем контейнеры
+7)Генерируем пару ключей для RSA с помощью keyGenerator
+
+cd keyGenerator
+
+python keyGenerator.py
+
+pub ключ переносим в директорию /client/keys/
+
+priv ключ переносим в директорию /verificationServer/keys/
+
+8)Запускаем контейнеры
 
 В gitBash пишем:
 
 docker-compose up -d
+
+9)Устанавливаем зависимости для клиента
+
+cd client
+
+pip install --no-cache-dir -r requirements.txt
+
+10)Запускаем клиентскую часть
+
+export VER_SERVER_IP=192.168.99.100 /127.0.0.1 - Для Linux
+export PYTHONDONTWRITEBYTECODE=1
+
+python app.py

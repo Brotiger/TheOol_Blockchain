@@ -1,16 +1,15 @@
 import rsa
-import os
 import base64
 
 class rsaCipher:
+    def __init__(self):
+
+        with open("./keys/rsa.priv", mode='rb') as privatefile:
+            privKeyData = privatefile.read()
+        self.__privkey = rsa.PrivateKey.load_pkcs1(privKeyData) 
+
     def __getPrivKey(self):
         return self.__privkey
-
-    def getPubKey(self):
-        return self.__pubkey.save_pkcs1().decode('ascii')
-
-    def createKeys(self):
-        (self.__pubkey, self.__privkey) = rsa.newkeys(512)
 
     def getPubKeyClient(self):
         return self.__pubkeyClient

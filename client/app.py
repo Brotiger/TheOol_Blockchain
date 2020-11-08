@@ -40,29 +40,30 @@ def main():
     elif(telegram == 'f'):
         data['telegram'] = False
 
-    passportPwd = input("Введите путь до фотографии паспорта*: ")
+    filePwd = input("Введите путь до фотографии паспорта*: ")
 
-    base = os.path.basename(passportPwd)
+    base = os.path.basename(filePwd)
     fileName ,fileExt = os.path.splitext(base)
 
     fileExt = fileExt[1:]
 
-    if os.path.exists(passportPwd):
-        if os.path.isfile(passportPwd):
-            passportByteString = open(passportPwd, 'rb').read()
+    if os.path.exists(filePwd):
+        if os.path.isfile(filePwd):
+            passportByteString = open(filePwd, 'rb').read()
 
-            passportString = base64.b64encode(passportByteString).decode('utf-8')
+            fileString = base64.b64encode(passportByteString).decode('utf-8')
 
-            passport = {
+            infoFile = {
                 'ext': fileExt,
                 'name': fileName,
-                'file': passportString
+                'file': fileString
             }
 
-            data['passport'] = passport
+            data['file'] = infoFile
 
     input("Для отправка введенных данных нажмите Enter")
 
-    httpObj.sendData("http://" + os.environ.get('VER_SERVER_IP') + ":80/api/reg/user",data)
+    response = httpObj.sendData("http://" + os.environ.get('VER_SERVER_IP') + ":80/api/reg/user",data)
+    print(response)
 
 main()

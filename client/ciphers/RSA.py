@@ -3,8 +3,10 @@ import os
 import base64
 
 class rsaCipher:
-    def setPubKeyServer(self, key):
-        self.__pubkeyServer = rsa.PublicKey.load_pkcs1(key)
+    def __init__(self):
+        with open("./keys/rsa.pub", mode='rb') as pubfile:
+            pubKeyData = pubfile.read()
+        self.__pubkeyServer = rsa.PublicKey.load_pkcs1(pubKeyData)
 
     def __getPrivKeyClient(self):
         return self.__privkeyClient
@@ -13,7 +15,7 @@ class rsaCipher:
         return self.__pubkeyServer
 
     def getPubKeyClient(self):
-        return self.__pubkeyClient.save_pkcs1().decode('ascii')
+        return self.__pubkeyClient.save_pkcs1().decode('utf-8')
 
     def createKeys(self):
         (self.__pubkeyClient, self.__privkeyClient) = rsa.newkeys(512)

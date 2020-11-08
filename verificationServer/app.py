@@ -15,16 +15,6 @@ app = Flask(__name__)
 
 rsaObj = RSA.rsaCipher()
 
-@app.route('/api/get/rsa', methods=['POST'])
-def getRSA():
-    rsaObj.createKeys()
-    rsaKey = rsaObj.getPubKey()
-
-    resData = {
-            "rsa_key": rsaKey,
-        }
-    return make_response(resData)
-
 @app.route('/api/reg/user', methods=['POST'])
 def regUser():
     return userController.Reg(request.data, rsaObj)

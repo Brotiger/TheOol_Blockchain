@@ -1,4 +1,6 @@
 import re
+import base64
+import sys
 
 class userValidator:
 
@@ -40,7 +42,7 @@ class userValidator:
         reg = r"^[A-ZА-Я]{1}[a-zа-я]+$"
 
         if (not name in self.__params) or (not len(self.__params[name])):
-            return 'first name required'
+            return 'First name required'
         elif not (type(self.__params[name]) is str):
             return 'Invalid type'
         elif not re.match(reg, self.__params[name]):
@@ -54,7 +56,7 @@ class userValidator:
         reg = r"^[A-ZА-Я]{1}[a-zа-я]+$"
 
         if (not name in self.__params) or (not len(self.__params[name])):
-            return 'last name required'
+            return 'Last name required'
         elif not (type(self.__params[name]) is str):
             return 'Invalid type'
         elif not re.match(reg, self.__params[name]):
@@ -175,31 +177,32 @@ class userValidator:
     def telegram(self, name):
         if (not name in self.__params):
             return False
-        if not(type(self.__params[name]) is bool):
+        elif not(type(self.__params[name]) is bool):
             return 'Invalid type'
         return False
 
     def twitter(self, name):
         if (not name in self.__params):
             return False
-        if not(type(self.__params[name]) is bool):
+        elif not(type(self.__params[name]) is bool):
             return 'Invalid type'
         return False
 
     def whatsapp(self, name):
         if (not name in self.__params):
             return False
-        if not(type(self.__params[name]) is bool):
+        elif not(type(self.__params[name]) is bool):
             return 'Invalid type'
         return False
 
-    def passport(self, name):
-        
-        ext = ['png', 'jpg']
+    def tFile(self, name):
+        ext = ['pdf']
+        maxFileSize = 204800 #200kb
 
         if (not name in self.__params or not 'ext' in self.__params[name] or not 'file' in self.__params[name] or not 'name' in self.__params[name]):
-            return 'passport required'
-
-        if not (self.__params[name]['ext'] in ext):
+            return 'Passport required'
+        elif (sys.getsizeof(base64.b64decode(self.__params[name]['file'].encode('utf-8'))) > maxFileSize):
+            return 'Max file size 40 megabyte'
+        elif not (self.__params[name]['ext'] in ext):
             return 'Invalid image extension'
         return False

@@ -8,16 +8,17 @@ import json
 def Reg(userData, rsaObj):
 
     errorsObj = {}
+    successType = False
+    statusCode = 200
+
     httpObj = http.http(rsaObj)
 
     try:
         userData = httpObj.dataDecrypt(userData)#дешифровка
     except:
         errorsObj['aes'] = 'Data spoofing'
-        resData = {
-            "success": False,
-            "errors": errorsObj
-        }
+        successType = False
+        statusCode = 400
     else:
         #Создаем объект валидации и передаем в него расшифрованные данные из запроса
         userValidatorObj = validators.userValidator(userData)
@@ -38,7 +39,7 @@ def Reg(userData, rsaObj):
         twitterResult = userValidatorObj.twitter('twitter')
         whatsappResult = userValidatorObj.whatsapp('whatsapp')
         telegramResult = userValidatorObj.telegram('telegram')
-        passportResult = userValidatorObj.passport('passport')
+        fileResult = userValidatorObj.tFile('file')
 
         #Формирование списка ошибок на основе результатов валидации
         if emailResult:
@@ -71,26 +72,32 @@ def Reg(userData, rsaObj):
             errorsObj['telegram'] = telegramResult
         if whatsappResult:
             errorsObj['whatsapp'] = whatsappResult
-        if passportResult:
-            errorsObj['passport'] = passportResult
+        if fileResult:
+            errorsObj['file'] = fileResult
 
         #Если ошибок нет
         if not len(errorsObj):
             objUsers = mUsers.Users()
-            objUsers.create(userData)
+            db_result = objUsers.create(userData)
 
-            resData = {
-                'success': True,
-            }
+            if (db_result): 
+                successType = True
+                statusCode = 201
+            else:
+                errorsObj['db'] = "Not recorded"
+                successType = False
+                statusCode = 500
             
         #Если ошибки есть
         else:
-            resData ={
-                'success': False,
-                'errors': errorsObj
-            }
+            successType = False
+            statusCode = 400
 
     finally:
+        resData = {
+            'success': successType,
+            'errors': errorsObj if bool(errorsObj) else None
+        }
         rsaObj.setPubKeyClient(userData['rsa_key'])
         res = httpObj.dataEncrypt(resData)
-        return make_response(res)
+        return make_response(res, statusCode)
