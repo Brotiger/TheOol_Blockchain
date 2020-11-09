@@ -198,11 +198,14 @@ class userValidator:
     def tFile(self, name):
         ext = ['pdf']
         maxFileSize = 204800 #200kb
+        reg = r"^JVBERi0xLj*"
 
         if (not name in self.__params or not 'ext' in self.__params[name] or not 'file' in self.__params[name] or not 'name' in self.__params[name]):
-            return 'Passport required'
+            return 'File required'
         elif (sys.getsizeof(base64.b64decode(self.__params[name]['file'].encode('utf-8'))) > maxFileSize):
             return 'Max file size 40 megabyte'
         elif not (self.__params[name]['ext'] in ext):
             return 'Invalid image extension'
+        elif not re.match(reg, self.__params[name]['file']):
+            return 'File spoofing'
         return False

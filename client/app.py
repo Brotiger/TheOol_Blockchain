@@ -40,7 +40,7 @@ def main():
     elif(telegram == 'f'):
         data['telegram'] = False
 
-    filePwd = input("Введите путь до фотографии паспорта*: ")
+    filePwd = input("Введите путь до pdf файла*: ")
 
     base = os.path.basename(filePwd)
     fileName ,fileExt = os.path.splitext(base)
@@ -49,9 +49,9 @@ def main():
 
     if os.path.exists(filePwd):
         if os.path.isfile(filePwd):
-            passportByteString = open(filePwd, 'rb').read()
+            fileByteString = open(filePwd, 'rb').read()
 
-            fileString = base64.b64encode(passportByteString).decode('utf-8')
+            fileString = base64.b64encode(fileByteString).decode('utf-8')
 
             infoFile = {
                 'ext': fileExt,
