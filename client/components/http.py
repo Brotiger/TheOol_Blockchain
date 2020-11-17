@@ -14,23 +14,22 @@ class http:
 
     def sendData(self, url, data):
 
-        data["rsa_key"] = self.__rsaObj.getPubKeyClient() 
+        data["rsa_key"] = self.__rsaObj.getPubKeyClient()
+
+        sign = self.__rsaObj.createSign(data)
+
+        data['sign'] = sign
 
         passwordAES = self.__randompassword()
 
-        encryptedData = self.__aesObj.encrypt(json.dumps(data), passwordAES)
+        encryptedData = self.__aesObj.encrypt(data, passwordAES)
 
         passwordAES = self.__rsaObj.encrypt(passwordAES)
 
         dataPost = {
             "aes_key": passwordAES,
             "data": encryptedData,
-            "sign": None
         }
-
-        sign = self.__rsaObj.createSign(json.dumps(data))
-
-        dataPost['sign'] = sign
 
         response = requests.post(url, json=dataPost)
         

@@ -2,6 +2,7 @@ import rsa
 import os
 import base64
 import re
+import json
 
 class rsaCipher:
 
@@ -61,6 +62,8 @@ class rsaCipher:
         return message
 
     def createSign(self, message):
-        sign = rsa.sign(b"123", self.__privKeyClient, 'SHA-1')
+        message = json.dumps(message)
+        message = message.encode('utf-8')
+        sign = rsa.sign(message, self.__privKeyClient, 'SHA-1')
         sign = base64.b64encode(sign).decode('utf-8')
         return sign
