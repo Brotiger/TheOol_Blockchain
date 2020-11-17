@@ -5,6 +5,7 @@ import requests
 import ciphers.AES as AES
 import ciphers.RSA as RSA
 import os
+import hashlib
 
 class http:
     def __init__(self):
@@ -13,8 +14,7 @@ class http:
 
     def sendData(self, url, data):
 
-        self.__rsaObj.createKeys()
-        data["rsa_key"] = self.__rsaObj.getPubKeyClient()
+        data["rsa_key"] = self.__rsaObj.getPubKeyClient() 
 
         passwordAES = self.__randompassword()
 
@@ -24,8 +24,14 @@ class http:
 
         dataPost = {
             "aes_key": passwordAES,
-            "data": encryptedData
+            "data": encryptedData,
+            "sign": None
         }
+
+        sign = self.__rsaObj.createSign(json.dumps(data))
+
+        dataPost['sign'] = sign
+
         response = requests.post(url, json=dataPost)
         
         response = self.dataDecrypt(response)

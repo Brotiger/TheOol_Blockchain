@@ -9,7 +9,7 @@ SET NAMES utf8mb4;
 
 DROP TABLE IF EXISTS `Passport`;
 CREATE TABLE `Passport` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `file` mediumblob NOT NULL,
   `ext` varchar(5) NOT NULL,
   `name` varchar(100) NOT NULL,
@@ -19,22 +19,21 @@ CREATE TABLE `Passport` (
 
 DROP TABLE IF EXISTS `UP`;
 CREATE TABLE `UP` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `passport_id` int NOT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL,
+  `passport_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `passport_id` (`passport_id`),
   CONSTRAINT `UP_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`id`),
-  CONSTRAINT `UP_ibfk_2` FOREIGN KEY (`passport_id`) REFERENCES `Passport` (`id`),
-  CONSTRAINT `UP_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `Users` (`id`),
-  CONSTRAINT `UP_ibfk_4` FOREIGN KEY (`passport_id`) REFERENCES `Passport` (`id`)
+  CONSTRAINT `UP_ibfk_2` FOREIGN KEY (`passport_id`) REFERENCES `Passport` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 DROP TABLE IF EXISTS `Users`;
 CREATE TABLE `Users` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `wallet` varchar(256) NOT NULL,
   `first_name` varchar(30) NOT NULL,
   `last_name` varchar(30) NOT NULL,
   `middle_name` varchar(30) DEFAULT NULL,
@@ -54,4 +53,4 @@ CREATE TABLE `Users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-11-08 11:40:23
+-- 2020-11-17 12:49:24

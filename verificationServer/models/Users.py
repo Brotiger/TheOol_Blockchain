@@ -22,6 +22,11 @@ class Users:
         sql_user_right = ") VALUES ("
         sql_values = ()
 
+        if('rsa_key' in userData):
+            sql_user_left += "wallet" + ","
+            sql_user_right += "%s,"
+            sql_values = sql_values + (userData['rsa_key'],)
+
         if('email' in userData):
             sql_user_left += "email" + ","
             sql_user_right += "%s,"
