@@ -3,6 +3,7 @@ import hashlib
 from Crypto.Cipher import AES
 import os
 from Crypto.Random import get_random_bytes
+import json
 
 class aesCipher:
     def decrypt(self, enc_dict, password):
@@ -21,6 +22,7 @@ class aesCipher:
         return bytes.decode(decrypted)
 
     def encrypt(self, plain_text, password):
+        plain_text = json.dumps(plain_text)
         salt = get_random_bytes(AES.block_size)
 
         private_key = hashlib.scrypt(

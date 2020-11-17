@@ -1,5 +1,6 @@
 import rsa
 import base64
+import json
 
 class rsaCipher:
     def __init__(self):
@@ -26,3 +27,14 @@ class rsaCipher:
 
     def setPubKeyClient(self, key):
         self.__pubKeyClient = rsa.PublicKey.load_pkcs1(key)
+
+    def verifySign(self, message, sign):
+        sign = base64.b64decode(sign.encode('utf-8'))
+        message = json.dumps(message)
+        message = message.encode('utf-8')
+        try:
+            rsa.verify(message, sign, self.getPubKeyClient())
+        except:
+            return False
+        else:
+            return True

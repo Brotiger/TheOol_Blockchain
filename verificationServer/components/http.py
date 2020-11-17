@@ -24,7 +24,7 @@ class http:
     def dataEncrypt(self, data):
 
         passwordAES = self.__randompassword()
-        encryptedData = self.__aesObj.encrypt(json.dumps(data), passwordAES)
+        encryptedData = self.__aesObj.encrypt(data, passwordAES)
 
         passwordAES = self.__rsaObj.encrypt(passwordAES)
 
