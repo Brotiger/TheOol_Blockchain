@@ -67,3 +67,13 @@ class rsaCipher:
         sign = rsa.sign(message, self.__privKeyClient, 'SHA-1')
         sign = base64.b64encode(sign).decode('utf-8')
         return sign
+
+    def verifySign(self, message, sign):
+        sign = base64.b64decode(sign.encode('utf-8'))
+        message = json.dumps(message)
+        message = message.encode('utf-8')
+        try:
+            rsa.verify(message, sign, self.getPubKeyServer())
+        except:
+            return False
+        return True

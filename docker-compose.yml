@@ -4,7 +4,7 @@ services:
   build: ./verificationServer
   container_name: blockchain_web
   volumes:
-    - ${VOLUME_DIR}/verificationServer:/usr/src/app
+    - ./verificationServer:/usr/src/app
   environment:
     PYTHONDONTWRITEBYTECODE: 1
   restart: always

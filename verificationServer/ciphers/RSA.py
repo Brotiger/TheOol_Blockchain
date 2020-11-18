@@ -9,7 +9,7 @@ class rsaCipher:
             privKeyData = privatefile.read()
         self.__privkey = rsa.PrivateKey.load_pkcs1(privKeyData) 
 
-    def __getPrivKey(self):
+    def getPrivKey(self):
         return self.__privkey
 
     def getPubKeyClient(self):
@@ -17,7 +17,7 @@ class rsaCipher:
 
     def decrypt(self, message):
         message = base64.b64decode(message.encode('utf-8'))
-        message = rsa.decrypt(message, self.__getPrivKey())
+        message = rsa.decrypt(message, self.getPrivKey())
         return bytes.decode(message)
 
     def encrypt(self, message):
@@ -36,5 +36,11 @@ class rsaCipher:
             rsa.verify(message, sign, self.getPubKeyClient())
         except:
             return False
-        else:
-            return True
+        return True
+
+    def createSign(self, message):
+        message = json.dumps(message)
+        message = message.encode('utf-8')
+        sign = rsa.sign(message, self.getPrivKey(), 'SHA-1')
+        sign = base64.b64encode(sign).decode('utf-8')
+        return sign

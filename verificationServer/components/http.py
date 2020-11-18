@@ -22,6 +22,9 @@ class http:
         return json.loads(self.__aesObj.decrypt(params['data'], AESPassword))
 
     def dataEncrypt(self, data):
+        sign = self.__rsaObj.createSign(data)
+
+        data["sign"] = sign
 
         passwordAES = self.__randompassword()
         encryptedData = self.__aesObj.encrypt(data, passwordAES)

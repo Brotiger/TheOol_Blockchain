@@ -34,7 +34,20 @@ class http:
         response = requests.post(url, json=dataPost)
         
         response = self.dataDecrypt(response)
-        return response
+
+        sign = response.pop('sign')
+
+        signResult = self.__rsaObj.verifySign(response, sign)
+        if(signResult):
+            return response
+        else:
+            response = {
+                "success": False,
+                "errors":{
+                    "sign": "Data spoofing"
+                }
+            }
+            return response
 
     def __randompassword(self):
         chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
