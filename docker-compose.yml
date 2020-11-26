@@ -1,8 +1,8 @@
 version: "3"
 services:
- web:
+ ver_server:
   build: ./verificationServer
-  container_name: blockchain_web
+  container_name: ver_server
   volumes:
     - ./verificationServer:/usr/src/app
   environment:
@@ -16,7 +16,7 @@ services:
     - "db"
  db:
   image: mysql
-  container_name: blockchain_db
+  container_name: db
   command: --default-authentication-plugin=mysql_native_password
   volumes:
     - mysql:/var/lib/mysql
@@ -35,6 +35,21 @@ services:
     - 6080:8080
   links:
     - "db"
+ ver_db:
+  image: mysql
+  container_name: ver_db
+  command: --default-authentication-plugin=mysql_native_password
+  volumes:
+    - ver_mysql:/var/lib/mysql
+  restart: always
+  ports:
+    - 3307:3307
+  environment:
+    MYSQL_ROOT_PASSWORD: ${VER_MYSQL_ROOT_PASSWORD}
+  cap_add:
+      - SYS_NICE
 volumes:
   mysql:
+    driver: local
+  ver_mysql:
     driver: local

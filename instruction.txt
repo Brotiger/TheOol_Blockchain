@@ -1,74 +1,8 @@
-1) Необходимо установить:
+Для сервера:
 
-git - система контроля версий
-docker - система виртуализации и контейнеризации
-docker-compose (под windows возможно идет вместе с docker)- система управления несколькими контейнерами сразу
-python 3.X (чем новее тем лучше) - язык программирования
-pip (или pip3, под windows возможно идет вместе с python) - пакетный менеджер python
+export MYSQL_ROOT_PASSWORD=123123
+export VER_MYSQL_ROOT_PASSWORD=123123
 
-Так же вместе с git должна установить оболочка командной строки gitBash (далее будем использовать ее а не стандартный терминал windows)
+Для клиента:
 
-2) Для проверки установки
-
-Открываем gitBash (где то в пуске должна быть иконка), и вводим следующие команды:
-
-git --version
-docker version
-docker-compose --version
-python -V
-pip -V
-
-Если ПО установленно то данные команды ниже должны вывести версию ПО по каждому пункту
-
-3) Переносим проект на локальную машину
-
-В gitBash пишем:
-
-cd ~/Documents  (переходим в директорию Мои документы текущего пользователя, проект под windows должен распологаться именно в этой директории, вот так вот криво работает docker под windows :) )
-
-git clone https://<имя пользователя bitbucket>@bitbucket.org/smile1601/theoolias.git (копируем проект из удаленного репозитория, в самом репозитории так же есть данная команда)
-
-cd ./theoolias (переходим в директорию с проектом)
-
-4) Устанавливаем зависимости python для клиентской части
-
-В gitBash пишем:
-
-pip install --no-cache-dir -r ./client/requirements.txt
-
-5) Далее необходимо задать переменные окружения
-
-Открываем gitBash и пишем:
-
-export MYSQL_ROOT_PASSWORD=password
-
-6)Запускаем сам докер - иконку докера должна быть где то на рабочем столе и должна называться - Docker Quickstart Terminal
-
-7)Генерируем пару ключей для RSA с помощью keyGenerator
-
-cd keyGenerator
-
-python keyGenerator.py
-
-pub ключ переносим в директорию /client/keys/
-
-priv ключ переносим в директорию /verificationServer/keys/
-
-8)Запускаем контейнеры
-
-В gitBash пишем:
-
-docker-compose up -d
-
-9)Устанавливаем зависимости для клиента
-
-cd client
-
-pip install --no-cache-dir -r requirements.txt
-
-10)Запускаем клиентскую часть
-
-export VER_SERVER_IP=192.168.99.100 /127.0.0.1 - Для Linux
-export PYTHONDONTWRITEBYTECODE=1
-
-python app.py
+export VER_SERVER_IP=123123
