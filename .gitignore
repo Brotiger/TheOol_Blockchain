@@ -4,3 +4,4 @@ databases
 *.pub
 tests
 *.pdf
+*.id

@@ -2,13 +2,13 @@ import re
 import base64
 import sys
 
-class userValidator:
+class validator:
 
     __params = {}
 
     def __init__(self, userData):
         self.__params = userData
-
+    
     def email(self, name):
         maxSize = 256
         reg = r"^[a-z]{1}[a-z0-9]*@[a-z]{1}[a-z0-9]*\.[a-z]+$"

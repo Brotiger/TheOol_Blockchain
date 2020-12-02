@@ -3,8 +3,8 @@ import base64
 import json
 
 class Users:
-    def __connect(self):
-        con_info = json.loads(open('./config/connect_db.json', 'r').read())
+    def __connect(self, file):
+        con_info = json.loads(open('./config/' + file, 'r').read())
 
         self.__con = pymysql.connect(
             host=con_info['host'],
@@ -14,16 +14,192 @@ class Users:
             db=con_info['db'],
             charset=con_info['charset']
         )
-        self.__cur =  self.__con.cursor()
-    
-    def create(self, userData):
+        self.__cur = self.__con.cursor()
+
+    def createVerifier(self, data):
+        self.__connect('connect_db.json')
+
+        sql_result = {}
+
+        sql = "INSERT INTO verifierUsers (rsa_pub) VALUES ( %s)"
+
+        sql_verifier_result = self.__cur.execute(sql, data["rsa_key"])
+
+        self.__con.commit()
+
+        user_id = self.__cur.lastrowid
+
+        sql_result["id"] = user_id
+
+        self.__close()
+
+        return sql_result
+
+    def getAll(self, data):
+        self.__connect('connect_db.json')
+
+        sql_result = []
+
+        sql_user_arr = [
+            "id",
+            "first_name",
+            "last_name"
+        ]
+
+        sql_user = "SELECT "
+
+        for sql_ell in sql_user_arr:
+            sql_user += sql_ell + ","
+        
+        sql_user = sql_user[:-1]
+
+        sql_user += " FROM Users LIMIT " + str(data["limit"]) + " OFFSET " + str(data["offset"])
+
+        sql_result_user = self.__cur.execute(sql_user)
+        sql_user_data = self.__cur.fetchall()
+
+        q = 0
+        user_data = {}
+
+        while(q < len(sql_user_data)):
+            i = 0
+            while(i < len(sql_user_arr)):
+                user_data[sql_user_arr[i]] = sql_user_data[q][i]
+                i += 1
+            sql_result.append(user_data)
+            q += 1
+
+        self.__close()
+
+        return  sql_result
+
+    def checkPermission(self, data):
+        self.__connect('connect_db.json')
+
+        sql = "SELECT rsa_pub FROM verifierUsers WHERE id=%s"
+
+        sql_result = self.__cur.execute(sql, str(data))
+        sql_data = self.__cur.fetchone()
+
+        self.__close()
+
+        return sql_data
+        
+    def getOne(self, data, move = False):
+        self.__connect('connect_db.json')
+
+        sql_result = {}
+
+        #Массив данных для запроса
+        sql_user_arr = [
+            "id",
+            "email",
+            "phone",
+            "first_name",
+            "last_name",
+            "middle_name",
+            "date_of_birth",
+            "country_and_place_of_birth",
+            "nationality",
+            "country_of_residence",
+            "address",
+            "zip_code"
+        ]
+
+        sql_move_user_arr = [
+            "rsa_key",
+            "facebook",
+            "twitter",
+            "whatsapp",
+            "telegram",
+            "email",
+            "phone",
+            "first_name",
+            "last_name",
+            "middle_name",
+            "date_of_birth",
+            "country_and_place_of_birth",
+            "nationality",
+            "country_of_residence",
+            "address",
+            "zip_code"
+        ]
+
+        sql_passport_arr = [
+            "file",
+            "ext",
+            "name"
+        ]
+
+        sql_user = "SELECT "
+
+        if(move):
+            for sql_ell in sql_move_user_arr:
+                sql_user += sql_ell + ","
+        else:
+            for sql_ell in sql_user_arr:
+                sql_user += sql_ell + ","
+
+        sql_user = sql_user[:-1]
+
+        sql_user += " FROM Users WHERE id=" + str(data["id"])
+
+        sql_result_user = self.__cur.execute(sql_user)
+        sql_user_data = self.__cur.fetchone()
+
+        i = 0
+
+        if(move):
+            while(i < len(sql_move_user_arr)):
+                sql_result[sql_move_user_arr[i]] = sql_user_data[i]
+                i += 1
+        else:
+            while(i < len(sql_user_arr)):
+                sql_result[sql_user_arr[i]] = sql_user_data[i]
+                i += 1
+
+        passport_id_sql = "SELECT passport_id FROM UP WHERE user_id=" + str(data["id"])
+
+        sql_result_passport_id = self.__cur.execute(passport_id_sql)
+        sql_passport_id_data = self.__cur.fetchone()
+        sql_passport_id_data = str(sql_passport_id_data[0])
+
+        sql_passport = "SELECT "
+
+        for sql_ell in sql_passport_arr:
+            sql_passport += sql_ell + ","
+
+        sql_passport = sql_passport[:-1]
+
+        sql_passport += " FROM Passport WHERE id=" + sql_passport_id_data
+
+        sql_result_passport = self.__cur.execute(sql_passport)
+        sql_passport_data = self.__cur.fetchone()
+
+        sql_file_result = {}
+
+        q = 0
+
+        while(q < len(sql_passport_arr)):
+            sql_file_result[sql_passport_arr[q]] = sql_passport_data[q]
+            q += 1
+
+        sql_file_result["file"] = base64.b64encode(sql_file_result["file"]).decode('utf-8')
+
+        sql_result["file"] = sql_file_result
+
+        self.__close()
+
+        return sql_result
+
+    def create(self, userData, move = False):
         sql_user = ""
         sql_user_left = "INSERT INTO Users ("
         sql_user_right = ") VALUES ("
         sql_values = ()
 
         if('rsa_key' in userData):
-            sql_user_left += "wallet" + ","
+            sql_user_left += "rsa_key" + ","
             sql_user_right += "%s,"
             sql_values = sql_values + (userData['rsa_key'],)
 
@@ -121,9 +297,12 @@ class Users:
 
         sql_user = sql_user_left + sql_user_right
 
-        self.__connect()
+        if(move):
+            self.__connect('connect_ver_db.json')
+        else:
+            self.__connect('connect_db.json')
         try:
-            sql_result_user = self.__cur.execute(sql_user, sql_values)     
+            sql_result_user = self.__cur.execute(sql_user, sql_values)
 
             #id нового пользователя
             user_id = self.__cur.lastrowid
@@ -152,6 +331,21 @@ class Users:
             self.__close()
 
         return True
+
+    def delete(self, data):
+        return True
+    
+    def moveUser(self, data):
+        user = self.getOne(data, True)
+
+        move_result = self.create(user, True)
+
+        if(move_result):    #проверяем удалось ли перенести пользователя
+            delete_result = self.delete(data)
+            if(delete_result):  #проверяем удалось ли удалить пользователя из временной
+                return True
+
+        return False
 
     def __close(self):
         self.__cur.close()

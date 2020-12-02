@@ -6,18 +6,12 @@ import json
 
 class rsaCipher:
 
-    __wallet = "./wallet/"
+    __folder = "./new_user/"
     __privRSA = "client_rsa.priv"
     __pubRSA = "client_rsa.pub"
 
     def __init__(self):
-        with open("./keys/server_rsa.pub", mode='rb') as text_file:
-            pubKeyData = text_file.read()
-        self.__pubKeyServer = rsa.PublicKey.load_pkcs1(pubKeyData)
-        if(self.checkKeys()):
-            self.getKeys()
-        else:
-            self.createKeys()
+        self.createKeys()
 
     def __getPrivKeyClient(self):
         return self.__privKeyClient
@@ -31,23 +25,20 @@ class rsaCipher:
     def createKeys(self):
         (self.__pubKeyClient, self.__privKeyClient) = rsa.newkeys(512)
 
-        with open(self.__wallet + self.__privRSA, "w") as text_file:
+        with open(self.__folder + self.__privRSA, "w") as text_file:
             text_file.write(self.__privKeyClient.save_pkcs1().decode('utf-8'))
 
-        with open(self.__wallet + self.__pubRSA, "w") as text_file:
-            text_file.write(self.__pubKeyClient.save_pkcs1().decode('utf-8'))
-
     def getKeys(self):
-        with open(self.__wallet + self.__privRSA, "rb") as text_file:
+        with open(self.__folder + self.__privRSA, "rb") as text_file:
             privKeyData = text_file.read()
         self.__privKeyClient = rsa.PrivateKey.load_pkcs1(privKeyData)
 
-        with open(self.__wallet + self.__pubRSA, "rb") as text_file:
+        with open(self.__folder + self.__pubRSA, "rb") as text_file:
             pubKeyData = text_file.read()
         self.__pubKeyClient = rsa.PublicKey.load_pkcs1(pubKeyData)
     
     def checkKeys(self):
-        if(os.path.exists(self.__wallet + self.__pubRSA) and os.path.exists(self.__wallet + self.__privRSA)):
+        if(os.path.exists(self.__folder + self.__pubRSA) and os.path.exists(self.__folder + self.__privRSA)):
             return True
         return False
 

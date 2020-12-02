@@ -1,15 +1,20 @@
-import validators.userValidator as validators
+import validators.validator as validators
 from flask import make_response
 import components.http as http
 import models.Users as mUsers
 import json
+import ciphers.RSA as RSA
+
+rsaObj = RSA.rsaCipher()
+
+objUsers = mUsers.Users()
 
 #Передаем rsa объект для того что бы извлечь из него закрытый ключ
-def Reg(userData, rsaObj):
+def reg(userData):
 
     errorsObj = {}
     successType = False
-    statusCode = 200
+    statusCode = 400
 
     httpObj = http.http(rsaObj)
 
@@ -33,25 +38,25 @@ def Reg(userData, rsaObj):
             statusCode = 400
         else:
             #Создаем объект валидации и передаем в него расшифрованные данные из запроса
-            userValidatorObj = validators.userValidator(userData)
+            validatorObj = validators.validator(userData)
 
             #Валидация
-            emailResult = userValidatorObj.email('email')
-            phoneResult = userValidatorObj.phone('phone')
-            fNameResult = userValidatorObj.fName('first_name')
-            lNameResult = userValidatorObj.lName('last_name')
-            mNameResult = userValidatorObj.mName('middle_name')
-            dateOfBirthResult = userValidatorObj.dateOfBirth('date_of_birth')
-            countryAndPlaceOfBirthResult = userValidatorObj.countryAndPlaceOfBirth('country_and_place_of_birth')
-            nationalityResult = userValidatorObj.nationality('nationality')
-            countryOfResidenceResult = userValidatorObj.countryOfResidence('country_of_residence')
-            addressResult = userValidatorObj.address('address')
-            zipCodeResult = userValidatorObj.zipCode('zip_code')
-            facebookResult = userValidatorObj.faceBook('facebook')
-            twitterResult = userValidatorObj.twitter('twitter')
-            whatsappResult = userValidatorObj.whatsapp('whatsapp')
-            telegramResult = userValidatorObj.telegram('telegram')
-            fileResult = userValidatorObj.tFile('file')
+            emailResult = validatorObj.email('email')
+            phoneResult = validatorObj.phone('phone')
+            fNameResult = validatorObj.fName('first_name')
+            lNameResult = validatorObj.lName('last_name')
+            mNameResult = validatorObj.mName('middle_name')
+            dateOfBirthResult = validatorObj.dateOfBirth('date_of_birth')
+            countryAndPlaceOfBirthResult = validatorObj.countryAndPlaceOfBirth('country_and_place_of_birth')
+            nationalityResult = validatorObj.nationality('nationality')
+            countryOfResidenceResult = validatorObj.countryOfResidence('country_of_residence')
+            addressResult = validatorObj.address('address')
+            zipCodeResult = validatorObj.zipCode('zip_code')
+            facebookResult = validatorObj.faceBook('facebook')
+            twitterResult = validatorObj.twitter('twitter')
+            whatsappResult = validatorObj.whatsapp('whatsapp')
+            telegramResult = validatorObj.telegram('telegram')
+            fileResult = validatorObj.tFile('file')
 
             #Формирование списка ошибок на основе результатов валидации
             if emailResult:
@@ -89,7 +94,6 @@ def Reg(userData, rsaObj):
 
             #Если ошибок нет
             if not len(errorsObj):
-                objUsers = mUsers.Users()
                 db_result = objUsers.create(userData)
 
                 if (db_result): 

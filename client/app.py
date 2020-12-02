@@ -63,7 +63,7 @@ def main():
 
     input("Для отправка введенных данных нажмите Enter")
 
-    response = httpObj.sendData("http://" + os.environ.get('VER_SERVER_IP') + ":80/api/reg/user",data)
+    response = httpObj.sendData("http://" + os.environ.get('VER_SERVER_IP') + ":80/api/users/reg",data)
     print(response)
 
 main()

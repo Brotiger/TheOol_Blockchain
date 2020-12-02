@@ -21,8 +21,6 @@ services:
   volumes:
     - mysql:/var/lib/mysql
   restart: always
-  ports:
-    - 3306:3306
   environment:
     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
   cap_add:
@@ -42,8 +40,6 @@ services:
   volumes:
     - ver_mysql:/var/lib/mysql
   restart: always
-  ports:
-    - 3307:3307
   environment:
     MYSQL_ROOT_PASSWORD: ${VER_MYSQL_ROOT_PASSWORD}
   cap_add:

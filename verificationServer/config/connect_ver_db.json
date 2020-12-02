@@ -1,0 +1,8 @@
+{
+    "host": "ver_db",
+    "user": "server",
+    "password": "uitTbumEc1G912357sdf4QtHasFI8NNWcEh",
+    "port": 3306,
+    "db": "verification",
+    "charset": "utf8mb4"
+}

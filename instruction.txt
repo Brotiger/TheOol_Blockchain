@@ -6,3 +6,7 @@ export VER_MYSQL_ROOT_PASSWORD=123123
 Для клиента:
 
 export VER_SERVER_IP=123123
+
+Установка клиентских зависимостей:
+
+pip3 install --no-cache-dir -r requirements.txt
