@@ -86,109 +86,112 @@ class Users:
         return sql_data
         
     def getOne(self, data, move = False):
-        self.__connect('connect_db.json')
+        try:
+            self.__connect('connect_db.json')
 
-        sql_result = {}
+            sql_result = {}
 
-        #Массив данных для запроса
-        sql_user_arr = [
-            "id",
-            "email",
-            "phone",
-            "first_name",
-            "last_name",
-            "middle_name",
-            "date_of_birth",
-            "country_and_place_of_birth",
-            "nationality",
-            "country_of_residence",
-            "address",
-            "zip_code"
-        ]
+            #Массив данных для запроса
+            sql_user_arr = [
+                "id",
+                "email",
+                "phone",
+                "first_name",
+                "last_name",
+                "middle_name",
+                "date_of_birth",
+                "country_and_place_of_birth",
+                "nationality",
+                "country_of_residence",
+                "address",
+                "zip_code"
+            ]
 
-        sql_move_user_arr = [
-            "rsa_key",
-            "facebook",
-            "twitter",
-            "whatsapp",
-            "telegram",
-            "email",
-            "phone",
-            "first_name",
-            "last_name",
-            "middle_name",
-            "date_of_birth",
-            "country_and_place_of_birth",
-            "nationality",
-            "country_of_residence",
-            "address",
-            "zip_code"
-        ]
+            sql_move_user_arr = [
+                "rsa_key",
+                "facebook",
+                "twitter",
+                "whatsapp",
+                "telegram",
+                "email",
+                "phone",
+                "first_name",
+                "last_name",
+                "middle_name",
+                "date_of_birth",
+                "country_and_place_of_birth",
+                "nationality",
+                "country_of_residence",
+                "address",
+                "zip_code"
+            ]
 
-        sql_passport_arr = [
-            "file",
-            "ext",
-            "name"
-        ]
+            sql_passport_arr = [
+                "file",
+                "ext",
+                "name"
+            ]
 
-        sql_user = "SELECT "
+            sql_user = "SELECT "
 
-        if(move):
-            for sql_ell in sql_move_user_arr:
-                sql_user += sql_ell + ","
-        else:
-            for sql_ell in sql_user_arr:
-                sql_user += sql_ell + ","
+            if(move):
+                for sql_ell in sql_move_user_arr:
+                    sql_user += sql_ell + ","
+            else:
+                for sql_ell in sql_user_arr:
+                    sql_user += sql_ell + ","
 
-        sql_user = sql_user[:-1]
+            sql_user = sql_user[:-1]
 
-        sql_user += " FROM Users WHERE id=" + str(data["id"])
+            sql_user += " FROM Users WHERE id=" + str(data["id"])
 
-        sql_result_user = self.__cur.execute(sql_user)
-        sql_user_data = self.__cur.fetchone()
+            sql_result_user = self.__cur.execute(sql_user)
+            sql_user_data = self.__cur.fetchone()
 
-        i = 0
+            i = 0
 
-        if(move):
-            while(i < len(sql_move_user_arr)):
-                sql_result[sql_move_user_arr[i]] = sql_user_data[i]
-                i += 1
-        else:
-            while(i < len(sql_user_arr)):
-                sql_result[sql_user_arr[i]] = sql_user_data[i]
-                i += 1
+            if(move):
+                while(i < len(sql_move_user_arr)):
+                    sql_result[sql_move_user_arr[i]] = sql_user_data[i]
+                    i += 1
+            else:
+                while(i < len(sql_user_arr)):
+                    sql_result[sql_user_arr[i]] = sql_user_data[i]
+                    i += 1
 
-        passport_id_sql = "SELECT passport_id FROM UP WHERE user_id=" + str(data["id"])
+            passport_id_sql = "SELECT passport_id FROM UP WHERE user_id=" + str(data["id"])
 
-        sql_result_passport_id = self.__cur.execute(passport_id_sql)
-        sql_passport_id_data = self.__cur.fetchone()
-        sql_passport_id_data = str(sql_passport_id_data[0])
+            sql_result_passport_id = self.__cur.execute(passport_id_sql)
+            sql_passport_id_data = self.__cur.fetchone()
+            sql_passport_id_data = str(sql_passport_id_data[0])
 
-        sql_passport = "SELECT "
+            sql_passport = "SELECT "
 
-        for sql_ell in sql_passport_arr:
-            sql_passport += sql_ell + ","
+            for sql_ell in sql_passport_arr:
+                sql_passport += sql_ell + ","
 
-        sql_passport = sql_passport[:-1]
+            sql_passport = sql_passport[:-1]
 
-        sql_passport += " FROM Passport WHERE id=" + sql_passport_id_data
+            sql_passport += " FROM Passport WHERE id=" + sql_passport_id_data
 
-        sql_result_passport = self.__cur.execute(sql_passport)
-        sql_passport_data = self.__cur.fetchone()
+            sql_result_passport = self.__cur.execute(sql_passport)
+            sql_passport_data = self.__cur.fetchone()
 
-        sql_file_result = {}
+            sql_file_result = {}
 
-        q = 0
+            q = 0
 
-        while(q < len(sql_passport_arr)):
-            sql_file_result[sql_passport_arr[q]] = sql_passport_data[q]
-            q += 1
+            while(q < len(sql_passport_arr)):
+                sql_file_result[sql_passport_arr[q]] = sql_passport_data[q]
+                q += 1
 
-        sql_file_result["file"] = base64.b64encode(sql_file_result["file"]).decode('utf-8')
+            sql_file_result["file"] = base64.b64encode(sql_file_result["file"]).decode('utf-8')
 
-        sql_result["file"] = sql_file_result
-
-        self.__close()
+            sql_result["file"] = sql_file_result
+        except:
+            return False
+        finally:
+            self.__close()
 
         return sql_result
 
@@ -333,17 +336,69 @@ class Users:
         return True
 
     def delete(self, data):
+        self.__connect('connect_db.json')
+        try:
+            sql_up_arr = [
+                "id",
+                "passport_id"
+            ]
+
+            sql_up = "SELECT "
+
+            for sql_ell in sql_up_arr:
+                    sql_up += sql_ell + ","
+
+            sql_up = sql_up[:-1]
+            
+            sql_up += " FROM UP WHERE user_id=" + str(data["id"])
+
+            sql_result_up =  self.__cur.execute(sql_up)
+
+            sql_up_data = self.__cur.fetchone()
+
+            i = 0
+            up_data = {}
+
+            while(i < len(sql_up_arr)):
+                up_data[sql_up_arr[i]] = sql_up_data[i]
+                i += 1
+
+            sql_delete_up = "DELETE FROM UP WHERE id=" + str(up_data["id"])
+            sql_result_delete_up = self.__cur.execute(sql_delete_up)
+
+            sql_delete_passport = "DELETE FROM Passport WHERE id=" + str(up_data["passport_id"])
+            sql_result_delete_passport = self.__cur.execute(sql_delete_passport)
+
+            sql_delete_user = "DELETE FROM Users WHERE id=" + str(data["id"])
+
+            sql_result_delete_user = self.__cur.execute(sql_delete_user)
+
+            if (not sql_result_delete_user or not sql_result_delete_passport or not sql_result_delete_up):
+                raise Exception("Error - One of the requests was not fulfilled")
+
+            self.__con.commit()
+        
+        except Exception as err:
+            
+            print(str(err))
+            self.__con.rollback()
+            return False
+
+        finally:
+            self.__close()
+
         return True
     
     def moveUser(self, data):
         user = self.getOne(data, True)
 
-        move_result = self.create(user, True)
+        if(user):
+            move_result = self.create(user, True)
 
-        if(move_result):    #проверяем удалось ли перенести пользователя
-            delete_result = self.delete(data)
-            if(delete_result):  #проверяем удалось ли удалить пользователя из временной
-                return True
+            if(move_result):    #проверяем удалось ли перенести пользователя
+                delete_result = self.delete(data)
+                if(delete_result):  #проверяем удалось ли удалить пользователя из временной
+                    return True
 
         return False
 

@@ -162,7 +162,7 @@ def moveUser(data):
             successType = True
             statusCode = 201
         else:
-            errorsObj['db'] = "Unstable connection or not permissions"
+            errorsObj['db'] = "Transfer failed"
             successType = False
             statusCode = 500
     else:
