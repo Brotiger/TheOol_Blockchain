@@ -28,6 +28,9 @@ class rsaCipher:
         with open(self.__folder + self.__privRSA, "w") as text_file:
             text_file.write(self.__privKeyClient.save_pkcs1().decode('utf-8'))
 
+        with open(self.__folder + self.__pubRSA, "w") as text_file:
+            text_file.write(self.__pubKeyClient.save_pkcs1().decode('utf-8'))
+
     def getKeys(self):
         with open(self.__folder + self.__privRSA, "rb") as text_file:
             privKeyData = text_file.read()

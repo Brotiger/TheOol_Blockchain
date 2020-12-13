@@ -5,54 +5,79 @@ import models.Users as mUsers
 import json
 import ciphers.RSA as RSA
 
+rsaObj = RSA.rsaCipher()
+
 objUsers = mUsers.Users()
 
-def getAll(data):
+def getAll(userData):
     errorsObj = {}
     successType = False
     statusCode = 400
     resData = {}
 
-    data = json.loads(data)
+    httpObj = http.http(rsaObj)
 
-    validatorObj = validators.validator(data)
-
-    userIdResult = validatorObj.id('user_id')
-    offsetResult = validatorObj.offset('offset')
-    limitResult = validatorObj.limit('limit')
-
-    user_id = data.pop("user_id")
-
-    if userIdResult:
-        errorsObj['user_id'] = userIdResult
-    if offsetResult:
-        errorsObj['offset'] = offsetResult
-    if limitResult:
-        errorsObj['limit'] = limitResult
-
-    if not len(errorsObj):
-        db_result = False
-        rsa_pub = objUsers.checkPermission(user_id)
-
-        if(rsa_pub):
-            db_result = objUsers.getAll(data)
-
-        if (db_result):
-            resData['data'] = db_result if bool(db_result) else None
-            successType = True
-            statusCode = 201
-        else:
-            errorsObj['db'] = "Unstable connection"
-            successType = False
-            statusCode = 500
-    else:
+    try:
+        userData = httpObj.dataDecrypt(userData)#дешифровка
+    except:
+        errorsObj['aes'] = 'Data spoofing'
         successType = False
         statusCode = 400
+    else:
+        validatorObj = validators.validator(userData)
+        userIdResult = validatorObj.id('user_id')
 
-    resData['success'] = successType
-    resData['errors'] = errorsObj if bool(errorsObj) else None
+        if(not userIdResult):
+            pubVerifirekey = objUsers.getVerifier(userData)["rsa_pub"]
 
-    return make_response(resData, statusCode)
+        rsaObj.setPubKeyClient(pubVerifirekey)#сюда надо передать публичный ключ
+
+        sign = userData.pop("sign")
+
+        signResult = rsaObj.verifySign(userData, sign)
+
+        #Если подпись не настоящая дальше ничег оне проверяем и генерируем ошибку
+        if not signResult:
+            errorsObj['sign'] = 'Data spoofing'
+            successType = False
+            statusCode = 400
+        else:
+            offsetResult = validatorObj.offset('offset')
+            limitResult = validatorObj.limit('limit')
+
+            user_id = userData.pop("user_id")
+
+            if userIdResult:
+                errorsObj['user_id'] = userIdResult
+            if offsetResult:
+                errorsObj['offset'] = offsetResult
+            if limitResult:
+                errorsObj['limit'] = limitResult
+
+            if not len(errorsObj):
+                db_result = False
+                rsa_pub = objUsers.checkPermission(user_id)
+
+                if(rsa_pub):
+                    db_result = objUsers.getAll(userData)
+
+                if (db_result):
+                    resData['data'] = db_result if bool(db_result) else None
+                    successType = True
+                    statusCode = 201
+                else:
+                    errorsObj['db'] = "Unstable connection"
+                    successType = False
+                    statusCode = 500
+            else:
+                successType = False
+                statusCode = 400
+
+    finally:
+        resData['success'] = successType
+        resData['errors'] = errorsObj if bool(errorsObj) else None
+        res = httpObj.dataEncrypt(resData)
+        return make_response(res, statusCode)
 
 def getOne(data):
     errorsObj = {}

@@ -22,7 +22,7 @@ def regUser():
 def getOne():
     return verifierController.getOne(request.data)
 
-@app.route('/api/verification/getAll', methods=['GET'])
+@app.route('/api/verification/getAll', methods=['POST'])
 def getAll():
     return verifierController.getAll(request.data)
 

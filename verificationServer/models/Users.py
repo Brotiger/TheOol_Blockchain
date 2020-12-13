@@ -16,6 +16,35 @@ class Users:
         )
         self.__cur = self.__con.cursor()
 
+    def getVerifier(self, data):
+        self.__connect('connect_db.json')
+
+        sql_result = {}
+
+        sql_user_arr = [
+            "rsa_pub",
+        ]
+
+        sql_user = "SELECT "
+
+        for sql_ell in sql_user_arr:
+            sql_user += sql_ell + ","
+        
+        sql_user = sql_user[:-1]
+
+        sql_user += " FROM verifierUsers WHERE id =" + str(data["user_id"])
+
+        sql_result_user = self.__cur.execute(sql_user)
+        sql_user_data = self.__cur.fetchone()
+
+        i = 0
+
+        while(i < len(sql_user_arr)):
+            sql_result[sql_user_arr[i]] = sql_user_data[i]
+            i += 1
+
+        return sql_result
+
     def createVerifier(self, data):
         self.__connect('connect_db.json')
 
@@ -59,18 +88,19 @@ class Users:
         sql_user_data = self.__cur.fetchall()
 
         q = 0
-        user_data = {}
 
         while(q < len(sql_user_data)):
             i = 0
+            user_data = {}
             while(i < len(sql_user_arr)):
                 user_data[sql_user_arr[i]] = sql_user_data[q][i]
                 i += 1
+
             sql_result.append(user_data)
             q += 1
-
+            
         self.__close()
-
+        
         return  sql_result
 
     def checkPermission(self, data):

@@ -1,0 +1,32 @@
+# coding: utf8
+import components.http as http
+import os
+import base64
+import json
+
+def main():
+    user_id_path = "./wallet/user_id.id"
+
+    httpObj = http.http()
+
+    data = {}
+
+    print("1 - Весь список пользователей")
+    print("2 - Информация о конкретном пользователем")
+    print("3 - Верефицировать пользователя")
+
+    choice = input("Ваше действие: ")
+
+    with open(user_id_path, "r") as text_file:
+        data["user_id"] = int(text_file.read())
+
+    if(choice == "1"):
+        data["limit"] = int(input("limit: "))
+        data["offset"] = int(input("offset: "))
+
+    input("Для отправка введенных данных нажмите Enter")
+
+    response = httpObj.sendData("http://" + os.environ.get('VER_SERVER_IP') + ":80/api/verification/getAll",data)
+    print(response)
+
+main()

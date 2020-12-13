@@ -6,7 +6,7 @@ import json
 
 class rsaCipher:
 
-    __folder = "./wallet/"
+    __wallet = "./wallet/"
     __privRSA = "client_rsa.priv"
     __pubRSA = "client_rsa.pub"
 
@@ -31,23 +31,23 @@ class rsaCipher:
     def createKeys(self):
         (self.__pubKeyClient, self.__privKeyClient) = rsa.newkeys(512)
 
-        with open(self.__folder + self.__privRSA, "w") as text_file:
+        with open(self.__wallet + self.__privRSA, "w") as text_file:
             text_file.write(self.__privKeyClient.save_pkcs1().decode('utf-8'))
 
-        with open(self.__folder + self.__pubRSA, "w") as text_file:
+        with open(self.__wallet + self.__pubRSA, "w") as text_file:
             text_file.write(self.__pubKeyClient.save_pkcs1().decode('utf-8'))
 
     def getKeys(self):
-        with open(self.__folder + self.__privRSA, "rb") as text_file:
+        with open(self.__wallet + self.__privRSA, "rb") as text_file:
             privKeyData = text_file.read()
         self.__privKeyClient = rsa.PrivateKey.load_pkcs1(privKeyData)
 
-        with open(self.__folder + self.__pubRSA, "rb") as text_file:
+        with open(self.__wallet + self.__pubRSA, "rb") as text_file:
             pubKeyData = text_file.read()
         self.__pubKeyClient = rsa.PublicKey.load_pkcs1(pubKeyData)
     
     def checkKeys(self):
-        if(os.path.exists(self.__folder + self.__pubRSA) and os.path.exists(self.__folder + self.__privRSA)):
+        if(os.path.exists(self.__wallet + self.__pubRSA) and os.path.exists(self.__wallet + self.__privRSA)):
             return True
         return False
 

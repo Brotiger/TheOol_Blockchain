@@ -29,7 +29,7 @@ def reg(userData):
 
         sign = userData.pop("sign")
 
-        signResult = rsaObj.verifySign(userData,sign)
+        signResult = rsaObj.verifySign(userData, sign)
 
         #Если подпись не настоящая дальше ничег оне проверяем и генерируем ошибку
         if not signResult:
