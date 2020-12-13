@@ -21,6 +21,8 @@ class validator:
             return 'Offset required'
         elif not (type(self.__params[name]) is int):
             return 'Invalid type'
+        elif(self.__params[name] < 0):
+            return "Offset must be positive"
         return False
 
     def limit(self, name):
@@ -28,6 +30,8 @@ class validator:
             return 'Limit required'
         elif not (type(self.__params[name]) is int):
             return 'Invalid type'
+        elif(self.__params[name] < 0):
+            return "Limit must be positive"
         elif (self.__params[name] > 100):
             return "Limit should not be more than 100"
         return False
@@ -37,6 +41,8 @@ class validator:
             return 'Id required'
         elif not (type(self.__params[name]) is int):
             return 'Invalid type'
+        elif(self.__params[name] < 0):
+            return "Id must be positive"
         return False
 
     def confirm(self, name):

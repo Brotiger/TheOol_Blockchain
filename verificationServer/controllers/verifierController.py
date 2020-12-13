@@ -42,7 +42,7 @@ def getAll(data):
             successType = True
             statusCode = 201
         else:
-            errorsObj['db'] = "Unstable connection or not permissions"
+            errorsObj['db'] = "Unstable connection"
             successType = False
             statusCode = 500
     else:
@@ -85,7 +85,7 @@ def getOne(data):
             successType = True
             statusCode = 201
         else:
-            errorsObj['db'] = "Unstable connection or not permissions"
+            errorsObj['db'] = "Unstable connection"
             successType = False
             statusCode = 500
     else:
