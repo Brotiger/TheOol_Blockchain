@@ -36,8 +36,9 @@ class http:
         response = self.dataDecrypt(response)
 
         sign = response.pop('sign')
-
+    
         signResult = self.__rsaObj.verifySign(response, sign)
+
         if(signResult):
             return response
         else:
@@ -57,9 +58,13 @@ class http:
     def dataDecrypt(self, res):
 
         params = res.json()
+
+        if('aes_key' in params):
         
-        AESPassword = params['aes_key']
+            AESPassword = params['aes_key']
 
-        AESPassword = self.__rsaObj.decrypt(AESPassword)
+            AESPassword = self.__rsaObj.decrypt(AESPassword)
 
-        return json.loads(self.__aesObj.decrypt(params['data'], AESPassword))
+            return json.loads(self.__aesObj.decrypt(params['data'], AESPassword))
+
+        return params

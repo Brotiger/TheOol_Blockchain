@@ -37,13 +37,16 @@ class Users:
         sql_result_user = self.__cur.execute(sql_user)
         sql_user_data = self.__cur.fetchone()
 
-        i = 0
+        if(sql_user_data == None): #Если с переданным id не найдено валидатора
+            return False
+        else:
+            i = 0
 
-        while(i < len(sql_user_arr)):
-            sql_result[sql_user_arr[i]] = sql_user_data[i]
-            i += 1
+            while(i < len(sql_user_arr)):
+                sql_result[sql_user_arr[i]] = sql_user_data[i]
+                i += 1
 
-        return sql_result
+            return sql_result
 
     def createVerifier(self, data):
         self.__connect('connect_db.json')

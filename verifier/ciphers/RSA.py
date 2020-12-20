@@ -69,11 +69,15 @@ class rsaCipher:
         return sign
 
     def verifySign(self, message, sign):
+        new_message = {}
+        for k in sorted(message.keys()):
+            new_message[k] = message[k]
+
         sign = base64.b64decode(sign.encode('utf-8'))
-        message = json.dumps(message)
-        message = message.encode('utf-8')
+        new_message = json.dumps(new_message)
+        new_message = new_message.encode('utf-8')
         try:
-            rsa.verify(message, sign, self.getPubKeyServer())
+            rsa.verify(new_message, sign, self.getPubKeyServer())
         except:
             return False
         return True

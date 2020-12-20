@@ -18,7 +18,7 @@ app = Flask(__name__)
 def regUser():
     return userController.reg(request.data)
 
-@app.route('/api/verification/getOne', methods=['GET'])
+@app.route('/api/verification/getOne', methods=['POST'])
 def getOne():
     return verifierController.getOne(request.data)
 
