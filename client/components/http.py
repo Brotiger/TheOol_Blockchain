@@ -10,9 +10,10 @@ import hashlib
 class http:
     def __init__(self):
         self.__aesObj = AES.aesCipher()
-        self.__rsaObj = RSA.rsaCipher()
 
-    def sendData(self, url, data):
+    def sendData(self, url, data, walletPassword):
+
+        self.__rsaObj = RSA.rsaCipher(walletPassword)
 
         data["rsa_key"] = self.__rsaObj.getPubKeyClient()
 

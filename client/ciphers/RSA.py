@@ -3,6 +3,7 @@ import os
 import base64
 import re
 import json
+import ciphers.AES as AES
 
 class rsaCipher:
 
@@ -10,14 +11,16 @@ class rsaCipher:
     __privRSA = "client_rsa.priv"
     __pubRSA = "client_rsa.pub"
 
-    def __init__(self):
+    def __init__(self, walletPassword):
+        self.__aesObj = AES.aesCipher()
+
         with open("./keys/server_rsa.pub", mode='rb') as text_file:
             pubKeyData = text_file.read()
         self.__pubKeyServer = rsa.PublicKey.load_pkcs1(pubKeyData)
         if(self.checkKeys()):
-            self.getKeys()
+            self.getKeys(walletPassword)
         else:
-            self.createKeys()
+            self.createKeys(walletPassword)
 
     def __getPrivKeyClient(self):
         return self.__privKeyClient
@@ -28,18 +31,22 @@ class rsaCipher:
     def getPubKeyClient(self):
         return self.__pubKeyClient.save_pkcs1().decode('utf-8')
 
-    def createKeys(self):
+    def createKeys(self, walletPassword):
         (self.__pubKeyClient, self.__privKeyClient) = rsa.newkeys(512)
 
         with open(self.__folder + self.__privRSA, "w") as text_file:
-            text_file.write(self.__privKeyClient.save_pkcs1().decode('utf-8'))
+            print(self.__privKeyClient.save_pkcs1().decode('utf-8'))
+            text_file.write(json.dumps(self.__aesObj.encrypt(self.__privKeyClient.save_pkcs1().decode('utf-8'), walletPassword)))
 
         with open(self.__folder + self.__pubRSA, "w") as text_file:
             text_file.write(self.__pubKeyClient.save_pkcs1().decode('utf-8'))
 
-    def getKeys(self):
+    def getKeys(self, walletPassword):
         with open(self.__folder + self.__privRSA, "rb") as text_file:
-            privKeyData = text_file.read()
+            privKeyData = self.__aesObj.decrypt(json.loads(text_file.read()), walletPassword)
+            privKeyData = privKeyData[1:]
+            privKeyData = privKeyData[:-1]
+            privKeyData = privKeyData.replace(r"\n", "\n")#могут быть проблемы
         self.__privKeyClient = rsa.PrivateKey.load_pkcs1(privKeyData)
 
         with open(self.__folder + self.__pubRSA, "rb") as text_file:
@@ -62,18 +69,26 @@ class rsaCipher:
         return message
 
     def createSign(self, message):
-        message = json.dumps(message)
-        message = message.encode('utf-8')
-        sign = rsa.sign(message, self.__privKeyClient, 'SHA-1')
+        new_message = {}
+        for k in sorted(message.keys()):
+            new_message[k] = message[k]
+
+        new_message = json.dumps(new_message)
+        new_message = new_message.encode('utf-8')
+        sign = rsa.sign(new_message, self.__privKeyClient, 'SHA-1')
         sign = base64.b64encode(sign).decode('utf-8')
         return sign
 
     def verifySign(self, message, sign):
+        new_message = {}
+        for k in sorted(message.keys()):
+            new_message[k] = message[k]
+
         sign = base64.b64decode(sign.encode('utf-8'))
-        message = json.dumps(message)
-        message = message.encode('utf-8')
+        new_message = json.dumps(new_message)
+        new_message = new_message.encode('utf-8')
         try:
-            rsa.verify(message, sign, self.getPubKeyServer())
+            rsa.verify(new_message, sign, self.getPubKeyServer())
         except:
             return False
         return True

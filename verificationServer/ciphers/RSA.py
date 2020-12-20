@@ -29,18 +29,26 @@ class rsaCipher:
         self.__pubKeyClient = rsa.PublicKey.load_pkcs1(key)
 
     def verifySign(self, message, sign):
+        new_message = {}
+        for k in sorted(message.keys()):
+            new_message[k] = message[k]
+
         sign = base64.b64decode(sign.encode('utf-8'))
-        message = json.dumps(message)
-        message = message.encode('utf-8')
+        new_message = json.dumps(new_message)
+        new_message = new_message.encode('utf-8')
         try:
-            rsa.verify(message, sign, self.getPubKeyClient())
+            rsa.verify(new_message, sign, self.getPubKeyClient())
         except:
             return False
         return True
 
     def createSign(self, message):
-        message = json.dumps(message)
-        message = message.encode('utf-8')
-        sign = rsa.sign(message, self.getPrivKey(), 'SHA-1')
+        new_message = {}
+        for k in sorted(message.keys()):
+            new_message[k] = message[k]
+
+        new_message = json.dumps(new_message)
+        new_message = new_message.encode('utf-8')
+        sign = rsa.sign(new_message, self.getPrivKey(), 'SHA-1')
         sign = base64.b64encode(sign).decode('utf-8')
         return sign

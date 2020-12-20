@@ -22,11 +22,8 @@ class http:
         return json.loads(self.__aesObj.decrypt(params['data'], AESPassword))
 
     def createSign(self, data):
-        new_data = {}
-        for k in sorted(data.keys()):
-            new_data[k] = data[k]
 
-        sign = self.__rsaObj.createSign(new_data)
+        sign = self.__rsaObj.createSign(data)
 
         return sign
 

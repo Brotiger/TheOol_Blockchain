@@ -9,6 +9,7 @@ def main():
 
     data = {}
 
+    walletPassword = input("Wallet password*: ")
     data["first_name"] = input("First name*: ")
     data["last_name"] = input("Last name*: ")
     data["middle_name"] = input("Middle name: ")
@@ -63,7 +64,7 @@ def main():
 
     input("Для отправка введенных данных нажмите Enter")
 
-    response = httpObj.sendData("http://" + os.environ.get('VER_SERVER_IP') + ":80/api/users/reg",data)
+    response = httpObj.sendData("http://" + os.environ.get('VER_SERVER_IP') + ":80/api/users/reg",data, walletPassword)
     print(response)
 
 main()
