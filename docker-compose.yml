@@ -34,10 +34,12 @@ services:
   links:
     - "db"
  ver_db:
-  image: mysql
+  build: ./ver_db
   container_name: ver_db
   command: --default-authentication-plugin=mysql_native_password
   volumes:
+    - ./ver_db/:/var/spool/cron/crontabs/
+    - ./ver_db/data:/home/data
     - ver_mysql:/var/lib/mysql
   restart: always
   environment:
