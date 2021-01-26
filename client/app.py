@@ -5,6 +5,9 @@ import base64
 
 def main():
 
+    wallet_priv = "./wallet/client_rsa.priv"
+    wallet_pub = "./wallet/client_rsa.pub"
+
     httpObj = http.http()
 
     data = {}
@@ -13,7 +16,7 @@ def main():
     else:
         verServerIP = os.environ.get('VER_SERVER_IP')
 
-    if(os.path.exists("./wallet/client_rsa.priv")):
+    if(os.path.exists(wallet_priv)):
         print("Вы уже зарегистрированы")
     else:
         walletPassword = input("Wallet password*: ")
@@ -72,6 +75,11 @@ def main():
         input("Для отправка введенных данных нажмите Enter")
 
         response = httpObj.sendData("http://" + verServerIP + ":80/api/users/reg",data, walletPassword)
+
+        if(response["success"] == False):
+            os.remove(wallet_priv)
+            os.remove(wallet_pub)
+            
         print(response)
 
 main()

@@ -491,6 +491,48 @@ class Users:
 
         return False
 
+    def checkEmailExist(self, email):
+        self.__connect('connect_ver_db.json')
+
+        sql_email = "SELECT COUNT(*) FROM uniqueData WHERE email = %s"
+        email = hashlib.sha256(email.encode()).hexdigest()
+        email_hash = (email,)
+        sql_result_email = self.__cur.execute(sql_email, email_hash)
+        sql_email_data = self.__cur.fetchone()[0]
+
+        if(sql_email_data):
+            return True
+
+        return False
+
+    def checkFBExist(self, facebook):
+        self.__connect('connect_ver_db.json')
+
+        sql_facebook = "SELECT COUNT(*) FROM uniqueData WHERE facebook = %s"
+        facebook = hashlib.sha256(facebook.encode()).hexdigest()
+        facebook_hash = (facebook,)
+        sql_result_facebook = self.__cur.execute(sql_facebook, facebook_hash)
+        sql_facebook_data = self.__cur.fetchone()[0]
+
+        if(sql_facebook_data):
+            return True
+            
+        return False
+
+    def checkPhoneExist(self, phone):
+        self.__connect('connect_ver_db.json')
+
+        sql_phone = "SELECT COUNT(*) FROM uniqueData WHERE phone = %s"
+        phone = hashlib.sha256(phone.encode()).hexdigest()
+        phone_hash = (phone,)
+        sql_result_phone = self.__cur.execute(sql_phone, phone_hash)
+        sql_phone_data = self.__cur.fetchone()[0]
+
+        if(sql_phone_data):
+            return True
+            
+        return False
+
     def __close(self):
         self.__cur.close()
         self.__con.close()

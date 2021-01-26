@@ -23,7 +23,8 @@ class validator:
             return 'Incorrect email'
         elif (len(self.__params[name]) > maxSize):
             return 'Max email size ' + str(maxSize) + ' characters'
-        self.__objUsers.checkEmailExist(self.__params[name])
+        elif(self.__objUsers.checkEmailExist(self.__params[name])):
+            return 'Email busy'
         return False
 
     def phone(self, name):
@@ -38,6 +39,8 @@ class validator:
             return 'Incorrect phone'
         elif (len(self.__params[name]) > maxSize):
             return 'Max phone size ' + str(maxSize) + ' characters'
+        elif(self.__objUsers.checkPhoneExist(self.__params[name])):
+            return 'Phone busy'
         return False
 
     def fName(self, name):
@@ -175,6 +178,8 @@ class validator:
             return 'Incorrect faceBook address'
         elif (len(self.__params[name]) > maxSize):
             return 'Max Facebook address size ' + str(maxSize) + ' characters'
+        elif(self.__objUsers.checkFBExist(self.__params[name])):
+            return 'Facebook busy'
         return False
 
     def telegram(self, name):
