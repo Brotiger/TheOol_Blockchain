@@ -1,6 +1,7 @@
 import re
 import base64
 import sys
+import models.Users as mUsers
 
 class validator:
 
@@ -8,6 +9,7 @@ class validator:
 
     def __init__(self, userData):
         self.__params = userData
+        self.__objUsers = mUsers.Users()
     
     def email(self, name):
         maxSize = 256
@@ -21,6 +23,7 @@ class validator:
             return 'Incorrect email'
         elif (len(self.__params[name]) > maxSize):
             return 'Max email size ' + str(maxSize) + ' characters'
+        self.__objUsers.checkEmailExist(self.__params[name])
         return False
 
     def phone(self, name):

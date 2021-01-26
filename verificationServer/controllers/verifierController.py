@@ -254,7 +254,7 @@ def moveUser(userData):
                     db_result = objUsers.moveUser(userData)
 
                 if (db_result):
-                    resData['data'] = db_result if bool(db_result) else None
+                    #resData['data'] = db_result if bool(db_result) else None
                     successType = True
                     statusCode = 201
                 else:

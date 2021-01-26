@@ -35,7 +35,7 @@ class rsaCipher:
         (self.__pubKeyClient, self.__privKeyClient) = rsa.newkeys(512)
 
         with open(self.__folder + self.__privRSA, "w") as text_file:
-            print(self.__privKeyClient.save_pkcs1().decode('utf-8'))
+            #print(self.__privKeyClient.save_pkcs1().decode('utf-8'))
             text_file.write(json.dumps(self.__aesObj.encrypt(self.__privKeyClient.save_pkcs1().decode('utf-8'), walletPassword)))
 
         with open(self.__folder + self.__pubRSA, "w") as text_file:

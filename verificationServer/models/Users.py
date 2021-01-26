@@ -1,6 +1,7 @@
 import pymysql
 import base64
 import json
+import hashlib
 
 class Users:
     def __connect(self, file):
@@ -421,6 +422,57 @@ class Users:
             self.__close()
 
         return True
+
+    def createUniqueData(self, userData):
+        try:
+            sql_user = ""
+            sql_user_left = "INSERT INTO uniqueData ("
+            sql_user_right = ") VALUES ("
+            sql_values = ()
+
+            if('facebook' in userData):
+                sql_user_left += "facebook" + ","
+                sql_user_right += "%s,"
+                userData['facebook'] = hashlib.sha256(userData['facebook'].encode()).hexdigest()
+                sql_values = sql_values + (userData['facebook'],)
+
+            if('email' in userData):
+                sql_user_left += "email" + ","
+                sql_user_right += "%s,"
+                userData['email'] = hashlib.sha256(userData['email'].encode()).hexdigest()
+                sql_values = sql_values + (userData['email'],)
+
+            if('phone' in userData):
+                sql_user_left += "phone" + ","
+                sql_user_right += "%s,"
+                userData['phone'] = hashlib.sha256(userData['phone'].encode()).hexdigest()
+                sql_values = sql_values + (userData['phone'],)
+
+            sql_user_left = sql_user_left[:-1]
+            sql_user_right = sql_user_right[:-1]
+
+            sql_user_right += ")"
+
+            sql_user = sql_user_left + sql_user_right
+
+            self.__connect('connect_ver_db.json')
+
+            sql_result_user = self.__cur.execute(sql_user, sql_values)
+
+            if (not sql_result_user):
+                raise Exception("Error - One of the requests was not fulfilled")
+
+            self.__con.commit()
+
+        except Exception as err:
+            
+            print(str(err))
+            return False
+
+        finally:
+            self.__close()
+
+        return True
     
     def moveUser(self, data):
         user = self.getOne(data, True)
@@ -430,8 +482,12 @@ class Users:
 
             if(move_result):    #проверяем удалось ли перенести пользователя
                 delete_result = self.delete(data)
+
                 if(delete_result):  #проверяем удалось ли удалить пользователя из временной
-                    return True
+                    uniqueDataResult = self.createUniqueData(user)
+
+                    if(uniqueDataResult):
+                        return True
 
         return False
 
