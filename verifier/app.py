@@ -9,6 +9,11 @@ def main():
 
     httpObj = http.http()
 
+    if (not os.environ.get('VER_SERVER_IP')):
+        verServerIP = "127.0.0.1"
+    else:
+        verServerIP = os.environ.get('VER_SERVER_IP')
+
     data = {}
     postType = ''
 
@@ -34,7 +39,7 @@ def main():
 
     input("Для отправка введенных данных нажмите Enter")
 
-    response = httpObj.sendData("http://" + os.environ.get('VER_SERVER_IP') + ":80" + postType,data)
+    response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)
     print(response)
 
 main()
