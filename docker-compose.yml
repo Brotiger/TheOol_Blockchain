@@ -7,6 +7,7 @@ services:
     - ./verificationServer:/usr/src/app
   environment:
     PYTHONDONTWRITEBYTECODE: 1
+    CON_SERVER_IP: ${CON_SERVER_IP:-consensus}
   restart: always
   ports:
     - 80:5000
@@ -14,6 +15,20 @@ services:
   command: python app.py
   links:
     - "db"
+
+ consensus:
+  build: ./consensus
+  container_name: consensus
+  volumes:
+    - ./consensus:/usr/src/app
+  environment:
+    PYTHONDONTWRITEBYTECODE: 1
+  restart: always
+  ports:
+    - 9090:9090
+  working_dir: /usr/src/app
+  command: python app.py
+
  db:
   image: mysql
   container_name: db

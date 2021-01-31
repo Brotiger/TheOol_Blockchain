@@ -2,8 +2,17 @@ import pymysql
 import base64
 import json
 import hashlib
+import socket
+import os
+import pickle
 
 class Users:
+    def __init__(self):
+        if (not os.environ.get('CON_SERVER_IP')):
+            self.__conServerIP = "consensus"
+        else:
+            self.__conServerIP = os.environ.get('CON_SERVER_IP')
+
     def __connect(self, file):
         con_info = json.loads(open('./config/' + file, 'r').read())
 
@@ -474,6 +483,7 @@ class Users:
 
         return True
     
+    #Тут нету отката изменений в бд в случае если какая то из операций выполнена не успешно, надо исправить!
     def moveUser(self, data):
         user = self.getOne(data, True)
 
@@ -487,7 +497,9 @@ class Users:
                     uniqueDataResult = self.createUniqueData(user)
 
                     if(uniqueDataResult):
-                        return True
+                        sendToBlockChainResult = self.sendToBlockChain(data)
+                        if(sendToBlockChainResult):
+                            return True
 
         return False
 
@@ -531,6 +543,20 @@ class Users:
         if(sql_phone_data):
             return True
             
+        return False
+
+    def sendToBlockChain(self, data):
+        sock = socket.socket()
+        try:
+            sock.connect((self.__conServerIP, 9090))
+            sock.send(pickle.dumps(data))
+            data = sock.recv(1024)
+            if(data.decode() == "success"):
+                sock.close()
+                return True
+        except Exception as err:
+            print(str(err))
+            return False
         return False
 
     def __close(self):
