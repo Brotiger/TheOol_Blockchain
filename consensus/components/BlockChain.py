@@ -53,10 +53,11 @@ class BlockChain :
             i = self.lastFile()
 
             i += 1
-            with open(self.__adres + self.__blockDir + "/data_file" + '_' + str(i) + ".txt", "w") as write_file:
+            with open(self.__adres + self.__blockDir + "/data_file" + '_' + str(i) + ".block", "w") as write_file:
                 write_file.write(dataString)	
                 self.changeLastFile(i, dataHash)
-
+            #Сброс информации для записи если блок создан
+            self.__data = []
             return True
         return False
 
@@ -68,18 +69,18 @@ class BlockChain :
     def lastFile(self):
         statment=0
 
-        if(os.path.exists(self.__adres + self.__metaDir + "/lastFile.txt")):
-            f= open(self.__adres + self.__metaDir + "/lastFile.txt", "r")
+        if(os.path.exists(self.__adres + self.__metaDir + "/lastFile.meta")):
+            f= open(self.__adres + self.__metaDir + "/lastFile.meta", "r")
             statment = int(f.read())
             f.close()
 
         return statment
         
     def changeLastFile(self, i, dataHash):
-        file = open(self.__adres + self.__metaDir + "/lastFile.txt", "w")
+        file = open(self.__adres + self.__metaDir + "/lastFile.meta", "w")
         file.write(str(i))
         file.close()
-        f = open(self.__adres + self.__metaDir + "/lastHash.txt", "w")
+        f = open(self.__adres + self.__metaDir + "/lastHash.meta", "w")
         f.write(dataHash)
         f.close()
 
@@ -89,8 +90,8 @@ class BlockChain :
         prev_hash=str("")
         i = str(self.lastFile())
         
-        if(os.path.exists(self.__adres + self.__metaDir + "/lastHash.txt")):
-            f1= open(self.__adres + self.__metaDir + "/lastHash.txt","r")
+        if(os.path.exists(self.__adres + self.__metaDir + "/lastHash.meta")):
+            f1= open(self.__adres + self.__metaDir + "/lastHash.meta","r")
             prev_hash=f1.read()
             f1.close()
         else:

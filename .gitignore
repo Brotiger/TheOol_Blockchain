@@ -5,4 +5,6 @@ databases
 tests
 *.pdf
 *.id
+*.meta
+*.block
 db_dump_*.sql

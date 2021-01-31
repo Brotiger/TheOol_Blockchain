@@ -5,10 +5,9 @@ import pickle
 from datetime import datetime
 from select import select
 import pickle
-import threading
+from threading import Timer
 
-class metaServer:
-    __class_types = ["A","B","C"]
+class consensus:
     __socket_port = None
     __queue = None
 
@@ -17,22 +16,18 @@ class metaServer:
     __client_socket = None
     __addr = None
 
-    def __init__(self, socket_port = 9090, queue = 999, db_ip = "127.0.0.1", db_port = 27018, db_name = "meta-database-test", db_collection_name = "meta-collection-test", time_to_sort = 24):
-        if(type(socket_port is int) and type(queue is int) and type(db_ip is str) and type(db_port is int) and type(db_name is str) and type(db_collection_name is str) and type(time_to_sort is int)):
+    def __init__(self, socket_port = 9090, queue = 999, time = 10):
+        if(type(socket_port is int) and type(queue is int) and type(time is int)):
+            self.__time = time * 60
             self.__socket_port = socket_port
             self.__queue = queue
-            self.__db_ip = db_ip
-            self.__db_port = db_port
-            self.__db_name = db_name
-            self.__db_collection_name = db_collection_name
-            self.__time_to_sort = time_to_sort
             self.__blockChain = BlockChain()
         else:
             raise Exception("metaServer - invalid types passed to the constructor")
 
     def start(self):
         #Создание блоков по таймеру
-        self.set_interval(self.__blockChain.createBlock(), 60)
+        self.set_interval()
 
         server_socket = socket.socket()
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -92,13 +87,20 @@ class metaServer:
             return True
         return False
 
-    def set_interval(self, func, sec):
-        def func_wrapper():
-            set_interval(func, sec) 
-            func()  
-        t = threading.Timer(sec, func_wrapper)
-        t.start()
-        return t
+    def setQueue(self, time):
+        if(type(time is int)):
+            self.__time = time * 60
+            return True
+        return False
 
-metaServer = metaServer()
-metaServer.start()
+    def set_interval(self):
+        try:
+            self.__blockChain.createBlock()
+            t = Timer(self.__time, self.set_interval)
+            t.start()
+        except Exception as err:
+            print(str(err))
+
+
+consensus = consensus()
+consensus.start()
