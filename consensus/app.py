@@ -16,7 +16,7 @@ class consensus:
     __client_socket = None
     __addr = None
 
-    def __init__(self, socket_port = 9090, queue = 999, time = 10):
+    def __init__(self, socket_port = 9090, queue = 999, time = 1):
         if(type(socket_port is int) and type(queue is int) and type(time is int)):
             self.__time = time * 60
             self.__socket_port = socket_port
@@ -54,18 +54,29 @@ class consensus:
 
     def __read_message(self, client_socket):
         data = client_socket.recv(1024)
+        result = 'success'
 
-        if data:
+        try:
+            if not data:
+                raise Exception("data read error")
+
             data_obj = pickle.loads(data)
-            self.__blockChain.addData(data_obj)
+            dataResult = self.__blockChain.addData(data_obj)
 
-            client_socket.send("success".encode())
+            if not dataResult:
+                raise Exception("add info to block error")
+
+            client_socket.send(result.encode())
 
             print("Data fron user: " + self.__addr + " received")
-        else:
-            client_socket.close()
 
+        except Exception as err:
+            result = 'error'
             print("Connection whith user: " + self.__addr + " is broken")
+            
+        finally:
+            client_socket.send(result.encode())
+            client_socket.close()
 
     def __accept_connection(self, server_socket):
         self.__client_socket, addr = server_socket.accept()

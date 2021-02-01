@@ -14,32 +14,48 @@ def main():
     else:
         verServerIP = os.environ.get('VER_SERVER_IP')
 
-    data = {}
     postType = ''
 
-    print("1 - Весь список пользователей")
-    print("2 - Информация о конкретном пользователем")
-    print("3 - Верефицировать пользователя")
+    choice = ''
+    
+    while(choice != 'q'):
 
-    choice = input("Ваше действие: ")
+        data = {}
 
-    with open(user_id_path, "r") as text_file:
-        data["user_id"] = int(text_file.read())
+        print("1 - Весь список пользователей")
+        print("2 - Информация о конкретном пользователем")
+        print("3 - Верефицировать пользователя")
+        print("q - Выход")
 
-    if(choice == "1"):
-        data["limit"] = int(input("Количество записей: "))
-        data["offset"] = int(input("Сдвиг: "))
-        postType = "/api/verification/getAll"
-    elif(choice == "2"):
-        data["id"] = int(input("Введите id пользователя информацию о котором хотите получить: "))
-        postType = "/api/verification/getOne"
-    elif(choice == "3"):
-        data["id"] = int(input("Введите id пользователя которого хотите верефицировать: "))
-        postType = "/api/verification/move"
+        print('\n')
+        
+        choice = input("Ваше действие: ")
 
-    input("Для отправка введенных данных нажмите Enter")
+        print('\n')
 
-    response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)
-    print(response)
+        with open(user_id_path, "r") as text_file:
+            data["user_id"] = int(text_file.read())
+
+        if(choice == "q"):
+            break
+        elif(choice == "1"):
+            data["limit"] = int(input("Количество записей: "))
+            data["offset"] = int(input("Сдвиг: "))
+            postType = "/api/verification/getAll"
+        elif(choice == "2"):
+            data["id"] = int(input("Введите id пользователя информацию о котором хотите получить: "))
+            postType = "/api/verification/getOne"
+        elif(choice == "3"):
+            data["id"] = int(input("Введите id пользователя которого хотите верефицировать: "))
+            postType = "/api/verification/move"
+
+        print('\n')
+        input("Для отправка введенных данных нажмите Enter")
+
+        response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)
+        
+        print('\n')
+        print(response)
+        print('\n')
 
 main()
