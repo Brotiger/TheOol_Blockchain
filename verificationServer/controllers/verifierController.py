@@ -70,10 +70,12 @@ def getAll(userData):
                     resData['data'] = db_result if bool(db_result) else None
                     successType = True
                     statusCode = 201
-                else:
+                elif(db_result == False):
                     errorsObj['db'] = "DB error"
                     successType = False
                     statusCode = 500
+                else:
+                    successType = True
             else:
                 successType = False
                 statusCode = 400

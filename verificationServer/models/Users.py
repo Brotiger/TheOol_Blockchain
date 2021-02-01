@@ -497,7 +497,11 @@ class Users:
                     uniqueDataResult = self.createUniqueData(user)
 
                     if(uniqueDataResult):
-                        sendToBlockChainResult = self.sendToBlockChain(data)
+                        blockData = {
+                            "wallet_id": user["rsa_key"]
+                        }
+
+                        sendToBlockChainResult = self.sendToBlockChain(blockData)
                         if(sendToBlockChainResult):
                             return True
 
@@ -554,6 +558,8 @@ class Users:
             if(data.decode() == "success"):
                 sock.close()
                 return True
+            else:
+                return False
         except Exception as err:
             print(str(err))
             return False
