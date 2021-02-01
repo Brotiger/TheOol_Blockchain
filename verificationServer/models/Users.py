@@ -439,6 +439,12 @@ class Users:
             sql_user_right = ") VALUES ("
             sql_values = ()
 
+            if('rsa_key' in userData):
+                sql_user_left += "rsa_key" + ","
+                sql_user_right += "%s,"
+                userData['rsa_key'] = hashlib.sha256(userData['rsa_key'].encode()).hexdigest()
+                sql_values = sql_values + (userData['rsa_key'],)
+
             if('facebook' in userData):
                 sql_user_left += "facebook" + ","
                 sql_user_right += "%s,"

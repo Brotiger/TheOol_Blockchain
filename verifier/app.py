@@ -36,18 +36,28 @@ def main():
         with open(user_id_path, "r") as text_file:
             data["user_id"] = int(text_file.read())
 
-        if(choice == "q"):
-            break
-        elif(choice == "1"):
-            data["limit"] = int(input("Количество записей: "))
-            data["offset"] = int(input("Сдвиг: "))
-            postType = "/api/verification/getAll"
-        elif(choice == "2"):
-            data["id"] = int(input("Введите id пользователя информацию о котором хотите получить: "))
-            postType = "/api/verification/getOne"
-        elif(choice == "3"):
-            data["id"] = int(input("Введите id пользователя которого хотите верефицировать: "))
-            postType = "/api/verification/move"
+        try:
+            if(choice == "q"):
+                continue
+            elif(choice == "1"):
+                data["limit"] = int(input("Количество записей: "))
+                data["offset"] = int(input("Сдвиг: "))
+                postType = "/api/verification/getAll"
+            elif(choice == "2"):
+                data["id"] = int(input("Введите id пользователя информацию о котором хотите получить: "))
+                postType = "/api/verification/getOne"
+            elif(choice == "3"):
+                data["id"] = int(input("Введите id пользователя которого хотите верефицировать: "))
+                postType = "/api/verification/move"
+            else:
+                print("Неверный ввод, выбирите что то другое")
+                print("\n")
+                continue
+        except Exception as err:
+            print("\n")
+            print("Ошибка ввода, попробуйте еще раз")
+            print("\n")
+            continue
 
         print('\n')
         input("Для отправка введенных данных нажмите Enter")

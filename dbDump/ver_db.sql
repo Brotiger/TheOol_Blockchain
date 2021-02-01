@@ -4236,6 +4236,7 @@ CREATE TABLE `Users` (
 
 CREATE TABLE `uniqueData` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `rsa_key` varchar(255) NOT NULL,
   `facebook` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `phone` varchar(255) NOT NULL,
@@ -4243,4 +4244,4 @@ CREATE TABLE `uniqueData` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2021-01-26 13:07:51
+-- 2021-02-01 20:30:45
