@@ -442,26 +442,26 @@ class Users:
             if('rsa_key' in userData):
                 sql_user_left += "rsa_key" + ","
                 sql_user_right += "%s,"
-                userData['rsa_key'] = hashlib.sha256(userData['rsa_key'].encode()).hexdigest()
-                sql_values = sql_values + (userData['rsa_key'],)
+                rsa_key = hashlib.sha256(userData['rsa_key'].encode()).hexdigest()
+                sql_values = sql_values + (rsa_key,)
 
             if('facebook' in userData):
                 sql_user_left += "facebook" + ","
                 sql_user_right += "%s,"
-                userData['facebook'] = hashlib.sha256(userData['facebook'].encode()).hexdigest()
-                sql_values = sql_values + (userData['facebook'],)
+                facebook = hashlib.sha256(userData['facebook'].encode()).hexdigest()
+                sql_values = sql_values + (facebook,)
 
             if('email' in userData):
                 sql_user_left += "email" + ","
                 sql_user_right += "%s,"
-                userData['email'] = hashlib.sha256(userData['email'].encode()).hexdigest()
-                sql_values = sql_values + (userData['email'],)
+                email = hashlib.sha256(userData['email'].encode()).hexdigest()
+                sql_values = sql_values + (email,)
 
             if('phone' in userData):
                 sql_user_left += "phone" + ","
                 sql_user_right += "%s,"
-                userData['phone'] = hashlib.sha256(userData['phone'].encode()).hexdigest()
-                sql_values = sql_values + (userData['phone'],)
+                phone = hashlib.sha256(userData['phone'].encode()).hexdigest()
+                sql_values = sql_values + (phone,)
 
             sql_user_left = sql_user_left[:-1]
             sql_user_right = sql_user_right[:-1]
@@ -503,9 +503,17 @@ class Users:
                     uniqueDataResult = self.createUniqueData(user)
 
                     if(uniqueDataResult):
+                        verifierData = {
+                            "user_id": data["verifier_id"]
+                        }
+
+                        verifier_id = self.getVerifier(verifierData)
+                        print("----------")
+                        print(user["rsa_key"])
+
                         blockData = {
                             "wallet_id": user["rsa_key"],
-                            "verifier_id": data["verifier_id"]
+                            "verifier_id": verifier_id['rsa_pub']
                         }
 
                         sendToBlockChainResult = self.sendToBlockChain(blockData)

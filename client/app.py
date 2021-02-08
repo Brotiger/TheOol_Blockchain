@@ -36,6 +36,7 @@ def main():
             elif(choice == "1"):
                 if(os.path.exists(wallet_priv)):
                     print("Вы уже зарегистрированы")
+                    print("\n")
                 else:
                     walletPassword = input("Wallet password*: ")
                     data["first_name"] = input("First name*: ")
