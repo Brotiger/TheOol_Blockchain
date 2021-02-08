@@ -18,6 +18,10 @@ app = Flask(__name__)
 def regUser():
     return userController.reg(request.data)
 
+@app.route('/api/users/getBlockChainInfo', methods=['POST'])
+def getBlockChainInfo():
+    return userController.getBlockChainInfo(request.data)
+
 @app.route('/api/verification/getOne', methods=['POST'])
 def getOne():
     return verifierController.getOne(request.data)

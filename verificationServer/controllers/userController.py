@@ -9,6 +9,46 @@ rsaObj = RSA.rsaCipher()
 
 objUsers = mUsers.Users()
 
+def getBlockChainInfo(userData):
+
+    errorsObj = {}
+    successType = False
+    statusCode = 400
+    resData = {}
+
+    httpObj = http.http(rsaObj)
+
+    try:
+        userData = httpObj.dataDecrypt(userData)#дешифровка
+    except:
+        errorsObj['aes'] = 'Data spoofing'
+        successType = False
+        statusCode = 400
+    else:
+        rsaObj.setPubKeyClient(userData['rsa_key'])
+
+        sign = userData.pop("sign")
+
+        signResult = rsaObj.verifySign(userData, sign)
+
+        #Если подпись не настоящая дальше ничег оне проверяем и генерируем ошибку
+        if not signResult:
+            errorsObj['sign'] = 'Data spoofing'
+            successType = False
+            statusCode = 400
+        else:
+            resData['data'] = {
+                'lastHash': "213",
+                'lastFile': "123"
+            }
+
+    finally:
+        resData['success'] = successType
+        resData['errors'] = errorsObj if bool(errorsObj) else None
+
+        res = httpObj.dataEncrypt(resData)
+        return make_response(res, statusCode)
+
 #Передаем rsa объект для того что бы извлечь из него закрытый ключ
 def reg(userData):
 

@@ -504,7 +504,8 @@ class Users:
 
                     if(uniqueDataResult):
                         blockData = {
-                            "wallet_id": user["rsa_key"]
+                            "wallet_id": user["rsa_key"],
+                            "verifier_id": data["verifier_id"]
                         }
 
                         sendToBlockChainResult = self.sendToBlockChain(blockData)

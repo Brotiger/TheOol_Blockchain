@@ -253,6 +253,7 @@ def moveUser(userData):
                 rsa_pub = objUsers.checkPermission(user_id)
 
                 if(rsa_pub):
+                    userData["verifier_id"] = user_id
                     db_result = objUsers.moveUser(userData)
 
                 if (db_result):

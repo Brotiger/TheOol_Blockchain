@@ -5,6 +5,7 @@ services:
   container_name: ver_server
   volumes:
     - ./verificationServer:/usr/src/app
+    - ./consensus/BlockChain/block:/var/blocks
   environment:
     PYTHONDONTWRITEBYTECODE: 1
     CON_SERVER_IP: ${CON_SERVER_IP:-consensus}
