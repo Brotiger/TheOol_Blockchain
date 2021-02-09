@@ -107,13 +107,20 @@ def main():
                     print("Сначала вам необходимо зарегистрироваться")
                 else:
                     response = httpObj.sendData("http://" + verServerIP + ":80/api/users/reg",data, walletPassword)
+            elif(choice == "3"):
+                if(not os.path.exists(wallet_priv)):
+                    print("Сначала вам необходимо зарегистрироваться")
+                else:
+                    walletPassword = input("Wallet password*: ")
+                    response = httpObj.sendData("http://" + verServerIP + ":80/api/users/getBlocks",data, walletPassword)
+                    print(response)
             else:
                 print("Неверный ввод, выбирите что то другое")
                 print("\n")
                 continue
         except Exception as err:
             print("\n")
-            print("Ошибка ввода, попробуйте еще раз")
+            print("Ошибка, попробуйте еще раз")
             print("\n")
             continue
 

@@ -4,10 +4,79 @@ import components.http as http
 import models.Users as mUsers
 import json
 import ciphers.RSA as RSA
+import os
+import re
 
 rsaObj = RSA.rsaCipher()
 
 objUsers = mUsers.Users()
+
+blocksPath = "/var/blocks"
+
+def filterBlocks(file):
+    if re.match(r'^data_file_[0-9]*\.block', file) is not None:
+        return 1
+    else:
+        return 0
+
+def sortBlocksByNumber(inputStr):
+    filterStr = int(inputStr[10:-6])
+    return filterStr
+
+def getBlocks(userData):
+
+    errorsObj = {}
+    successType = False
+    statusCode = 400
+    resData = {}
+
+    httpObj = http.http(rsaObj)
+
+    try:
+        userData = httpObj.dataDecrypt(userData)#дешифровка
+    except:
+        errorsObj['aes'] = 'Data spoofing'
+        successType = False
+        statusCode = 400
+    else:
+        rsaObj.setPubKeyClient(userData['rsa_key'])
+
+        sign = userData.pop("sign")
+
+        signResult = rsaObj.verifySign(userData, sign)
+
+        #Если подпись не настоящая дальше ничег оне проверяем и генерируем ошибку
+        if not signResult:
+            errorsObj['sign'] = 'Data spoofing'
+            successType = False
+            statusCode = 400
+        else:
+            blocksJson = []
+            #путь до директории с блоками блокчейна
+            blockfiles = list(os.listdir(blocksPath))
+            
+            clearBlockFiles = filter(filterBlocks, blockfiles)
+            clearBlockFiles = list(clearBlockFiles)
+            clearBlockFiles.sort(key=sortBlocksByNumber)
+
+            for block in clearBlockFiles:
+                with open(blocksPath + "/" + block, mode='r') as blockfile:
+                    blockInfo = blockfile.read()
+                    blocksJson.append(blockInfo)
+
+            successType = True
+            statusCode = 200
+            
+            resData['data'] = {
+                'blocks': blocksJson,
+            }
+
+    finally:
+        resData['success'] = successType
+        resData['errors'] = errorsObj if bool(errorsObj) else None
+
+        res = httpObj.dataEncrypt(resData)
+        return make_response(res, statusCode)
 
 def getBlockChainInfo(userData):
 

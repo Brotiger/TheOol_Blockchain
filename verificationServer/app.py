@@ -22,6 +22,10 @@ def regUser():
 def getBlockChainInfo():
     return userController.getBlockChainInfo(request.data)
 
+@app.route('/api/users/getBlocks', methods=['POST'])
+def getBlocks():
+    return userController.getBlocks(request.data)
+
 @app.route('/api/verification/getOne', methods=['POST'])
 def getOne():
     return verifierController.getOne(request.data)
