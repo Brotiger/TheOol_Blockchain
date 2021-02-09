@@ -5,7 +5,7 @@ import base64
 import json
 
 def main():
-    user_id_path = "./wallet/user_id.id"
+    user_id_path = "./verifier_info/user_id.id"
 
     httpObj = http.http()
 

@@ -6,8 +6,8 @@ import base64
 def main():
 
     choice = ''
-    wallet_priv = "./wallet/client_rsa.priv"
-    wallet_pub = "./wallet/client_rsa.pub"
+    wallet_priv = "./wallet/rsa.priv"
+    wallet_pub = "./wallet/rsa.pub"
 
     httpObj = http.http()
 
