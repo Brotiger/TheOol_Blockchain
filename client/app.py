@@ -9,8 +9,9 @@ def main():
     wallet_priv = "./wallet/rsa.priv"
     wallet_pub = "./wallet/rsa.pub"
 
-    blocksPath = "./BlockChain/block"
-    metaPath = "./BlockChain/meta"
+    blocksPath = "block"
+    metaPath = "meta"
+    BlockChainDir = "./BlockChain"
 
     httpObj = http.http()
 
@@ -116,6 +117,15 @@ def main():
                 if(not os.path.exists(wallet_priv)):
                     print("Сначала вам необходимо зарегистрироваться")
                 else:
+
+                    #Проверка существования всех необходимых директорий
+                    if(not os.path.exists(BlockChainDir)):
+                        os.mkdir(BlockChainDir)
+                    if(not os.path.exists(BlockChainDir + "/" + metaPath)):
+                        os.mkdir(BlockChainDir + "/" + metaPath)
+                    if(not os.path.exists(BlockChainDir + "/" + blocksPath)):
+                        os.mkdir(BlockChainDir + "/" + blocksPath)
+
                     walletPassword = input("Wallet password*: ")
                     responseBlocks = httpObj.sendData("http://" + verServerIP + ":80/api/users/getBlocks",data, walletPassword)
                     successBlocks = responseBlocks["success"]
@@ -126,20 +136,20 @@ def main():
                     successMeta = responseMeta["success"]
 
                     if(successMeta and successBlocks):
-                        blockfiles = list(os.listdir(blocksPath))
+                        blockfiles = list(os.listdir(BlockChainDir + "/" + blocksPath))
 
                         for block in blockfiles:
-                            os.remove(blocksPath + "/" + block)
+                            os.remove(BlockChainDir + "/" + blocksPath + "/" + block)
                         i = 1
                         for block in responseBlocks['data']['blocks']:
-                            with open(blocksPath + "/data_file" + '_' + str(i) + ".block", "w") as write_file:
+                            with open(BlockChainDir + "/" + blocksPath + "/data_file" + '_' + str(i) + ".block", "w") as write_file:
                                 write_file.write(block)
                             i += 1
 
-                        with open(metaPath + "/lastHash.meta", "w") as write_file:
+                        with open(BlockChainDir + "/" + metaPath + "/lastHash.meta", "w") as write_file:
                             write_file.write(responseMeta["data"]["lastHash"])
 
-                        with open(metaPath + "/lastFile.meta", "w") as write_file:
+                        with open(BlockChainDir + "/" + metaPath + "/lastFile.meta", "w") as write_file:
                             write_file.write(responseMeta["data"]["lastFile"])
 
                     print("Цепочка обновлена")
