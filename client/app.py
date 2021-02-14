@@ -9,6 +9,9 @@ def main():
     wallet_priv = "./wallet/rsa.priv"
     wallet_pub = "./wallet/rsa.pub"
 
+    blocksPath = "./BlockChain/block"
+    metaPath = "./BlockChain/meta"
+
     httpObj = http.http()
 
     while(choice != 'q'):
@@ -103,22 +106,49 @@ def main():
                         
                     print(response)
             elif(choice == "2"):
+
                 if(not os.path.exists(wallet_priv)):
                     print("Сначала вам необходимо зарегистрироваться")
                 else:
                     response = httpObj.sendData("http://" + verServerIP + ":80/api/users/reg",data, walletPassword)
             elif(choice == "3"):
+                data = {}
                 if(not os.path.exists(wallet_priv)):
                     print("Сначала вам необходимо зарегистрироваться")
                 else:
                     walletPassword = input("Wallet password*: ")
-                    response = httpObj.sendData("http://" + verServerIP + ":80/api/users/getBlocks",data, walletPassword)
-                    print(response)
+                    responseBlocks = httpObj.sendData("http://" + verServerIP + ":80/api/users/getBlocks",data, walletPassword)
+                    successBlocks = responseBlocks["success"]
+
+                    data = {}
+
+                    responseMeta = httpObj.sendData("http://" + verServerIP + ":80/api/users/getBlockChainInfo",data, walletPassword)
+                    successMeta = responseMeta["success"]
+
+                    if(successMeta and successBlocks):
+                        blockfiles = list(os.listdir(blocksPath))
+
+                        for block in blockfiles:
+                            os.remove(blocksPath + "/" + block)
+                        i = 1
+                        for block in responseBlocks['data']['blocks']:
+                            with open(blocksPath + "/data_file" + '_' + str(i) + ".block", "w") as write_file:
+                                write_file.write(block)
+                            i += 1
+
+                        with open(metaPath + "/lastHash.meta", "w") as write_file:
+                            write_file.write(responseMeta["data"]["lastHash"])
+
+                        with open(metaPath + "/lastFile.meta", "w") as write_file:
+                            write_file.write(responseMeta["data"]["lastFile"])
+
+                    print("Цепочка обновлена")
             else:
                 print("Неверный ввод, выбирите что то другое")
                 print("\n")
                 continue
         except Exception as err:
+            print(err)
             print("\n")
             print("Ошибка, попробуйте еще раз")
             print("\n")

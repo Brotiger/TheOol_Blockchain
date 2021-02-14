@@ -11,7 +11,8 @@ rsaObj = RSA.rsaCipher()
 
 objUsers = mUsers.Users()
 
-blocksPath = "/var/blocks"
+blocksPath = "/var/bc/blocks"
+metaPath = "/var/bc/meta"
 
 def filterBlocks(file):
     if re.match(r'^data_file_[0-9]*\.block', file) is not None:
@@ -106,9 +107,19 @@ def getBlockChainInfo(userData):
             successType = False
             statusCode = 400
         else:
+            print("---")
+            with open(metaPath + "/lastHash.meta", mode='r') as lastHashFile:
+                lastHash = lastHashFile.read()
+            
+            with open(metaPath + "/lastFile.meta", mode='r') as lastFileFile:
+                lastFile = lastFileFile.read()
+            
+            successType = True
+            statusCode = 200
+            
             resData['data'] = {
-                'lastHash': "213",
-                'lastFile': "123"
+                'lastHash': lastHash,
+                'lastFile': lastFile
             }
 
     finally:
