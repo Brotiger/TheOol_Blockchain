@@ -133,6 +133,9 @@ def main():
                         with open(BlockChainDir + "/" + metaPath + "/lastFile.meta", mode='r') as text_file:
                             lastFileLocal = int(text_file.read())
 
+                        with open(BlockChainDir + "/" + metaPath + "/lastHash.meta", mode='r') as text_file:
+                            lastHashLocal = text_file.read()
+
                         blockfiles = os.listdir(BlockChainDir + "/" + blocksPath)
                         clearBlockFiles = filter(filterBlocks, blockfiles)
                         listDirCount = len(list(clearBlockFiles))
@@ -161,6 +164,8 @@ def main():
 
                             with open(BlockChainDir + "/" + metaPath + "/lastFile.meta", "w") as write_file:
                                 write_file.write(responseMeta["data"]["lastFile"])
+                        elif(not responseMeta["data"]["lastHash"] == lastHashLocal):
+                            raise Exception("Целостность цепочки нарушена")
 
                         BlockChainObj = BlockChain()
                         verifyResult = BlockChainObj.verify()
