@@ -36,6 +36,10 @@ class BlockChain :
 
         return True
 
+    def __sortBlocksByNumber(self, inputStr):
+        filterStr = int(inputStr[10:-6])
+        return filterStr
+
     def createBlock(self):
         data = self.__data
 
@@ -101,7 +105,7 @@ class BlockChain :
 
     def __getFiles(self, path):
         for root, dirs, files in os.walk(path):
-            files.sort()
+            files.sort(key=self.__sortBlocksByNumber)
         return files
 
     def verify(self):

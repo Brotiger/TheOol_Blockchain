@@ -60,6 +60,8 @@ def getBlocks(userData):
             clearBlockFiles = list(clearBlockFiles)
             clearBlockFiles.sort(key=sortBlocksByNumber)
 
+            clearBlockFiles = clearBlockFiles[userData['limit']:]
+
             for block in clearBlockFiles:
                 with open(blocksPath + "/" + block, mode='r') as blockfile:
                     blockInfo = blockfile.read()
@@ -107,7 +109,6 @@ def getBlockChainInfo(userData):
             successType = False
             statusCode = 400
         else:
-            print("---")
             with open(metaPath + "/lastHash.meta", mode='r') as lastHashFile:
                 lastHash = lastHashFile.read()
             

@@ -2,6 +2,8 @@
 import components.http as http
 import os
 import base64
+from components.BlockChain import BlockChain
+import re
 
 def main():
 
@@ -17,8 +19,8 @@ def main():
 
     while(choice != 'q'):
         print("1 - Регистрация")
-        print("2 - Проверить цепочку")
-        print("3 - Обновить цепочку")
+        print("2 - Проверить и обновить цепочку")
+        print("3 - Запросить цепочку сервера")
         print("q - Выход")
 
         print('\n')
@@ -111,9 +113,70 @@ def main():
                 if(not os.path.exists(wallet_priv)):
                     print("Сначала вам необходимо зарегистрироваться")
                 else:
-                    response = httpObj.sendData("http://" + verServerIP + ":80/api/users/reg",data, walletPassword)
+                    data = {}
+                    try:
+                        if(not os.path.exists(BlockChainDir + "/" + blocksPath)):
+                            raise Exception("У вас отсутствует цепочка, запросите ее с сервера через соответствующий пункт меню")
+                        if(not os.path.exists(BlockChainDir + "/" + metaPath + "/lastHash.meta")):
+                            raise Exception("У вас нету мета файла lastHash, для того что бы его получить пожалуйста обновите цепочку")
+                        if(not os.path.exists(BlockChainDir + "/" + metaPath + "/lastFile.meta")):
+                            raise Exception("У вас нету мета файла lastFile, для того что бы его получить пожалуйста обновите цепочку")
+
+                        walletPassword = input("Wallet password*: ")
+                        responseMeta = httpObj.sendData("http://" + verServerIP + ":80/api/users/getBlockChainInfo",data, walletPassword)
+                        successMeta = responseMeta["success"]
+
+                        if(not successMeta):
+                            print(responseMeta["errors"])
+                            raise Exception("Запрос к серверу выполнен не успешно")
+                        
+                        with open(BlockChainDir + "/" + metaPath + "/lastFile.meta", mode='r') as text_file:
+                            lastFileLocal = int(text_file.read())
+
+                        blockfiles = os.listdir(BlockChainDir + "/" + blocksPath)
+                        clearBlockFiles = filter(filterBlocks, blockfiles)
+                        listDirCount = len(list(clearBlockFiles))
+                        
+
+                        if(int(responseMeta["data"]["lastFile"]) > int(lastFileLocal) or int(responseMeta["data"]["lastFile"]) > listDirCount):
+                            data = {
+                                "limit": listDirCount
+                            }
+                            
+                            responseBlocks = httpObj.sendData("http://" + verServerIP + ":80/api/users/getBlocks",data, walletPassword)
+                            successBlocks = responseBlocks["success"]
+
+                            if(not successBlocks):
+                                raise Exception("Новые блоки с сервера не получены")
+                            
+                            i = listDirCount + 1
+
+                            for block in responseBlocks['data']['blocks']:
+                                with open(BlockChainDir + "/" + blocksPath + "/data_file" + '_' + str(i) + ".block", "w") as write_file:
+                                    write_file.write(block)
+                                i += 1
+
+                            with open(BlockChainDir + "/" + metaPath + "/lastHash.meta", "w") as write_file:
+                                write_file.write(responseMeta["data"]["lastHash"])
+
+                            with open(BlockChainDir + "/" + metaPath + "/lastFile.meta", "w") as write_file:
+                                write_file.write(responseMeta["data"]["lastFile"])
+
+                        BlockChainObj = BlockChain()
+                        verifyResult = BlockChainObj.verify()
+
+                        if(not verifyResult):
+                            raise Exception("Целостность цепочки нарушена")
+                            
+                    except Exception as err:
+                        print(err)
+                    else:
+                        print("Ваша цепочка цела и актуальна")
+                    
             elif(choice == "3"):
-                data = {}
+                data = {
+                    "limit": 0
+                }
                 if(not os.path.exists(wallet_priv)):
                     print("Сначала вам необходимо зарегистрироваться")
                 else:
@@ -163,5 +226,11 @@ def main():
             print("Ошибка, попробуйте еще раз")
             print("\n")
             continue
+
+def filterBlocks(file):
+    if re.match(r'^data_file_[0-9]*\.block', file) is not None:
+        return 1
+    else:
+        return 0
 
 main()
