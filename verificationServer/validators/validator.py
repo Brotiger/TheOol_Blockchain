@@ -86,7 +86,7 @@ class validator:
         return False
 
     def dateOfBirth(self ,name):
-        reg = r"^[0-9]+$"
+        reg = r"-?^[0-9]+$"
 
         if (not name in self.__params) or (not len(self.__params[name])):
             return 'Date of birth required'
