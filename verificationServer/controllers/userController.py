@@ -11,19 +11,6 @@ rsaObj = RSA.rsaCipher()
 
 objUsers = mUsers.Users()
 
-blocksPath = "/var/bc/blocks"
-metaPath = "/var/bc/meta"
-
-def filterBlocks(file):
-    if re.match(r'^data_file_[0-9]*\.block', file) is not None:
-        return 1
-    else:
-        return 0
-
-def sortBlocksByNumber(inputStr):
-    filterStr = int(inputStr[10:-6])
-    return filterStr
-
 def getBlocks(userData):
 
     errorsObj = {}
@@ -52,27 +39,24 @@ def getBlocks(userData):
             successType = False
             statusCode = 400
         else:
-            blocksJson = []
-            #путь до директории с блоками блокчейна
-            blockfiles = list(os.listdir(blocksPath))
-            
-            clearBlockFiles = filter(filterBlocks, blockfiles)
-            clearBlockFiles = list(clearBlockFiles)
-            clearBlockFiles.sort(key=sortBlocksByNumber)
+            data = {}
+            #запрос блоков через сокеты
+            data["type"] = "getBlocks"
+            data["limit"] = userData['limit']
 
-            clearBlockFiles = clearBlockFiles[userData['limit']:]
+            result = objUsers.sendToBlockChain(data)
 
-            for block in clearBlockFiles:
-                with open(blocksPath + "/" + block, mode='r') as blockfile:
-                    blockInfo = blockfile.read()
-                    blocksJson.append(blockInfo)
-
-            successType = True
-            statusCode = 200
-            
-            resData['data'] = {
-                'blocks': blocksJson,
-            }
+            if(result):
+                successType = True
+                statusCode = 200
+                
+                resData['data'] = {
+                    'blocks': result['blocks'],
+                }
+            else:
+                successType = False
+                statusCode = 503 #изменить код ошибки 
+                errorsObj['server'] = 'internal consistency server error'
 
     finally:
         resData['success'] = successType
@@ -109,20 +93,22 @@ def getBlockChainInfo(userData):
             successType = False
             statusCode = 400
         else:
-            with open(metaPath + "/lastHash.meta", mode='r') as lastHashFile:
-                lastHash = lastHashFile.read()
-            
-            with open(metaPath + "/lastFile.meta", mode='r') as lastFileFile:
-                lastFile = lastFileFile.read()
-            
-            successType = True
-            statusCode = 200
-            
-            resData['data'] = {
-                'lastHash': lastHash,
-                'lastFile': lastFile
-            }
-
+            #тут должен быть запрос информации через сокеты
+            data = {}
+            data["type"] = "getMeta"
+            result = objUsers.sendToBlockChain(data)
+            if(result):
+                successType = True
+                statusCode = 200
+                
+                resData['data'] = {
+                    'lastHash': result['lastHash'],
+                    'lastFile': result['lastFile']
+                }
+            else:
+                successType = False
+                statusCode = 503 #изменить код ошибки 
+                errorsObj['server'] = 'internal consistency server error'
     finally:
         resData['success'] = successType
         resData['errors'] = errorsObj if bool(errorsObj) else None

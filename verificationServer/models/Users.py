@@ -508,14 +508,12 @@ class Users:
                         }
 
                         verifier_id = self.getVerifier(verifierData)
-                        print("----------")
-                        print(user["rsa_key"])
 
                         blockData = {
                             "wallet_id": user["rsa_key"],
                             "verifier_id": verifier_id['rsa_pub']
                         }
-
+                        blockData["type"] = "createBlock"
                         sendToBlockChainResult = self.sendToBlockChain(blockData)
                         if(sendToBlockChainResult):
                             return True
@@ -566,18 +564,25 @@ class Users:
 
     def sendToBlockChain(self, data):
         sock = socket.socket()
+        dataR = b""
         try:
             sock.connect((self.__conServerIP, 9090))
             sock.send(pickle.dumps(data))
-            data = sock.recv(1024)
-            if(data.decode() == "success"):
-                sock.close()
-                return True
+            while True:
+                packet = sock.recv(1024)
+                if not packet: break
+                dataR += packet
+                
+            dataR = pickle.loads(dataR)
+            if(dataR["success"] == True):
+                return dataR
             else:
                 return False
         except Exception as err:
             print(str(err))
             return False
+        finally:
+            sock.close()
         return False
 
     def __close(self):
