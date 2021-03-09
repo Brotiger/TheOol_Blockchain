@@ -26,6 +26,10 @@ def getBlockChainInfo():
 def getBlocks():
     return userController.getBlocks(request.data)
 
+@app.route('/api/verification/getCount', methods=['POST'])
+def getCount():
+    return verifierController.getCount(request.data)
+
 @app.route('/api/verification/getOne', methods=['POST'])
 def getOne():
     return verifierController.getOne(request.data)

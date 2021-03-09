@@ -9,6 +9,81 @@ rsaObj = RSA.rsaCipher()
 
 objUsers = mUsers.Users()
 
+def getCount(userData):
+    errorsObj = {}
+    successType = False
+    statusCode = 400
+    resData = {}
+
+    httpObj = http.http(rsaObj)
+
+    try:
+        userData = httpObj.dataDecrypt(userData)#дешифровка
+    except:
+        errorsObj['aes'] = 'Data spoofing'
+        successType = False
+        statusCode = 400
+    else:
+        validatorObj = validators.validator(userData)
+        userIdResult = validatorObj.id('user_id')
+
+        if(not userIdResult): #Если user_id похож на user_id то запращиваем публичный ключ из бд
+            pubVerifirekey = objUsers.getVerifier(userData)
+            if(not pubVerifirekey): #Если запрос с таким user_id не выполнен
+                statusCode = 500
+                successType = False
+                errorsObj['user_id'] = "user_id spoofing"
+                return
+
+            rsaObj.setPubKeyClient(pubVerifirekey["rsa_pub"])#сюда надо передать публичный ключ
+
+        sign = userData.pop("sign")
+
+        signResult = rsaObj.verifySign(userData, sign)
+
+        #Если подпись не настоящая дальше ничег оне проверяем и генерируем ошибку
+        if not signResult:
+            errorsObj['sign'] = 'Data spoofing'
+            successType = False
+            statusCode = 400
+        else:
+
+            user_id = userData.pop("user_id")
+
+            if userIdResult:
+                errorsObj['user_id'] = userIdResult
+
+            if not len(errorsObj):
+                db_result = False
+                rsa_pub = objUsers.checkPermission(user_id)
+
+                if(rsa_pub):
+                    db_result = objUsers.getCount(userData)
+
+                if (db_result):
+                    resData['data'] = db_result if bool(db_result) else None
+                    successType = True
+                    statusCode = 201
+                elif(db_result == False):
+                    errorsObj['db'] = "DB error"
+                    successType = False
+                    statusCode = 500
+                else:
+                    successType = True
+            else:
+                successType = False
+                statusCode = 400
+
+    finally:
+        resData['success'] = successType
+        resData['errors'] = errorsObj if bool(errorsObj) else None
+
+        if(pubVerifirekey): #применять ли шифрование
+            resData = httpObj.dataEncrypt(resData)
+        else:
+            resData['sign'] = httpObj.createSign(resData)
+        return make_response(resData, statusCode)
+
 def getAll(userData):
     errorsObj = {}
     successType = False

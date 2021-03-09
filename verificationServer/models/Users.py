@@ -116,6 +116,22 @@ class Users:
         
         return  sql_result
 
+    def getCount(self, data):
+        self.__connect('connect_db.json')
+
+        sql_result = {}
+
+        sql_count = "SELECT COUNT(*) FROM Users"
+
+        sql_result_user = self.__cur.execute(sql_count)
+        sql_count_data = self.__cur.fetchone()
+            
+        self.__close()
+
+        sql_result["count"] = sql_count_data[0]
+        
+        return sql_result
+
     def checkPermission(self, data):
         self.__connect('connect_db.json')
 

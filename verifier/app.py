@@ -25,6 +25,7 @@ def main():
         print("1 - Весь список пользователей")
         print("2 - Информация о конкретном пользователем")
         print("3 - Верефицировать пользователя")
+        print("4 - Количество не верефецированных пользователей")
         print("q - Выход")
 
         print('\n')
@@ -49,6 +50,8 @@ def main():
             elif(choice == "3"):
                 data["id"] = int(input("Введите id пользователя которого хотите верефицировать: "))
                 postType = "/api/verification/move"
+            elif(choice == "4"):
+                postType = "/api/verification/getCount"
             else:
                 print("Неверный ввод, выбирите что то другое")
                 print("\n")
