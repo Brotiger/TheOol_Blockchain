@@ -8,13 +8,13 @@ import ciphers.AES as AES
 class rsaCipher:
 
     __folder = "./wallet/"
-    __privRSA = "client_rsa.priv"
-    __pubRSA = "client_rsa.pub"
+    __privRSA = "rsa.priv"
+    __pubRSA = "rsa.pub"
 
     def __init__(self, walletPassword):
         self.__aesObj = AES.aesCipher()
 
-        with open("./keys/server_rsa.pub", mode='rb') as text_file:
+        with open("./keys/rsa.pub", mode='rb') as text_file:
             pubKeyData = text_file.read()
         self.__pubKeyServer = rsa.PublicKey.load_pkcs1(pubKeyData)
         if(self.checkKeys()):

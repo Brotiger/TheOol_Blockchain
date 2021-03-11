@@ -5,7 +5,7 @@ import json
 class rsaCipher:
     def __init__(self):
 
-        with open("./keys/server_rsa.priv", mode='rb') as privatefile:
+        with open("./keys/rsa.priv", mode='rb') as privatefile:
             privKeyData = privatefile.read()
         self.__privkey = rsa.PrivateKey.load_pkcs1(privKeyData) 
 

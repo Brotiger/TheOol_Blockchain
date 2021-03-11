@@ -8,4 +8,3 @@ tests
 *.meta
 *.block
 db_dump_*.sql
-user_files

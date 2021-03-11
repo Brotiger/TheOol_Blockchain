@@ -63,8 +63,12 @@ class BlockChain :
 
     def __getFiles(self, path):
         for root, dirs, files in os.walk(path):
-            files.sort()
+            files.sort(key=self.__sortBlocksByNumber)
         return files
+
+    def __sortBlocksByNumber(self, inputStr):
+        filterStr = int(inputStr[10:-6])
+        return filterStr
 
     def verify(self):
         i = self.lastFile()
@@ -73,6 +77,7 @@ class BlockChain :
         path = self.__adres + self.__blockDir
         if(os.path.exists(path)):
             files = self.__getFiles(path)
+
             for fileName in files:
                 fileInfo= (open(path + "/" + fileName, "r")).read()
                 fileArr = fileInfo.split("\n")
@@ -81,7 +86,8 @@ class BlockChain :
                     return False
 
                 prevHash = hashlib.sha256(fileInfo.encode()).hexdigest()
-
+        else:
+            return False
         return True
 
     def select(self, fieldName = '', fieldValue = '', exists = False):

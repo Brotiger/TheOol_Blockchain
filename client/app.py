@@ -1,20 +1,18 @@
 # coding: utf8
-import components.http as http
 import os
 import base64
+from controllers.MainController import MainController
 
 def main():
 
-    choice = ''
-    wallet_priv = "./wallet/client_rsa.priv"
-    wallet_pub = "./wallet/client_rsa.pub"
+    MainControllerObj = MainController()
 
-    httpObj = http.http()
+    choice = ''
 
     while(choice != 'q'):
         print("1 - Регистрация")
-        print("2 - Проверить цепочку")
-        print("3 - Обновить цепочку")
+        print("2 - Проверить и обновить цепочку")
+        print("3 - Запросить цепочку сервера")
         print("q - Выход")
 
         print('\n')
@@ -23,18 +21,12 @@ def main():
 
         print('\n')
 
-        data = {}
-
-        if (not os.environ.get('VER_SERVER_IP')):
-            verServerIP = "127.0.0.1"
-        else:
-            verServerIP = os.environ.get('VER_SERVER_IP')
-
         try:
             if(choice == "q"):
                 continue
             elif(choice == "1"):
-                if(os.path.exists(wallet_priv)):
+                data = {}
+                if(MainControllerObj.checkReg()):
                     print("Вы уже зарегистрированы")
                     print("\n")
                 else:
@@ -95,30 +87,30 @@ def main():
                     input("Для отправка введенных данных нажмите Enter")
                     print("\n")
 
-                    response = httpObj.sendData("http://" + verServerIP + ":80/api/users/reg",data, walletPassword)
-
-                    if(response["success"] == False):
-                        os.remove(wallet_priv)
-                        os.remove(wallet_pub)
+                    response = MainControllerObj.reg(data, walletPassword)
                         
                     print(response)
             elif(choice == "2"):
-                if(not os.path.exists(wallet_priv)):
-                    print("Сначала вам необходимо зарегистрироваться")
-                else:
-                    response = httpObj.sendData("http://" + verServerIP + ":80/api/users/reg",data, walletPassword)
-            elif(choice == "3"):
-                if(not os.path.exists(wallet_priv)):
+                if(not MainControllerObj.checkReg()):
                     print("Сначала вам необходимо зарегистрироваться")
                 else:
                     walletPassword = input("Wallet password*: ")
-                    response = httpObj.sendData("http://" + verServerIP + ":80/api/users/getBlocks",data, walletPassword)
-                    print(response)
+                    checkChainResult = MainControllerObj.checkChain(walletPassword)
+                    print(checkChainResult)
+
+            elif(choice == "3"):
+                if(not MainControllerObj.checkReg()):
+                    print("Сначала вам необходимо зарегистрироваться")
+                else:
+                    walletPassword = input("Wallet password*: ")
+                    updateChainResult = MainControllerObj.updateChain(walletPassword)
+                    print(updateChainResult)
             else:
                 print("Неверный ввод, выбирите что то другое")
                 print("\n")
                 continue
         except Exception as err:
+            print(err)
             print("\n")
             print("Ошибка, попробуйте еще раз")
             print("\n")

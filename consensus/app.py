@@ -6,6 +6,9 @@ from datetime import datetime
 from select import select
 import pickle
 from threading import Timer
+import json
+import os
+import re
 
 class consensus:
     __socket_port = None
@@ -15,6 +18,8 @@ class consensus:
 
     __client_socket = None
     __addr = None
+    __metaPath = "./BlockChain/meta"
+    __blocksPath = "./BlockChain/block"
 
     def __init__(self, socket_port = 9090, queue = 999, time = 1):
         if(type(socket_port is int) and type(queue is int) and type(time is int)):
@@ -54,29 +59,58 @@ class consensus:
 
     def __read_message(self, client_socket):
         data = client_socket.recv(1024)
-        result = 'success'
+        result = {}
+        result['success'] = True
 
         try:
             if not data:
                 raise Exception("data read error")
 
             data_obj = pickle.loads(data)
-            dataResult = self.__blockChain.addData(data_obj)
+            mType = data_obj.pop("type")
 
-            if not dataResult:
-                raise Exception("add info to block error")
+            if(mType == "createBlock"):
+                dataResult = self.__blockChain.addData(data_obj)
+                if not dataResult:
+                    raise Exception("add info to block error")
+            elif(mType == "getMeta"):
+                with open(self.__metaPath + "/lastHash.meta", mode='r') as lastHashFile:
+                    lastHash = lastHashFile.read()
+            
+                with open(self.__metaPath + "/lastFile.meta", mode='r') as lastFileFile:
+                    lastFile = lastFileFile.read()
 
-            client_socket.send(result.encode())
+                result["lastHash"] = lastHash
+                result["lastFile"] = lastFile
 
-            print("Data fron user: " + self.__addr + " received")
+            elif(mType == "getBlocks"):
+                blocksJson = []
+                #путь до директории с блоками блокчейна
+                blockfiles = list(os.listdir(self.__blocksPath))
+                
+                clearBlockFiles = filter(self.__filterBlocks, blockfiles)
+                clearBlockFiles = list(clearBlockFiles)
+                clearBlockFiles.sort(key=self.__sortBlocksByNumber)
 
+                clearBlockFiles = clearBlockFiles[data_obj['limit']:]
+
+                for block in clearBlockFiles:
+                    with open(self.__blocksPath + "/" + block, mode='r') as blockfile:
+                        blockInfo = blockfile.read()
+                        blocksJson.append(blockInfo)
+                result["blocks"] = blocksJson
+
+            else:
+                raise Exception("Unknown message type")
         except Exception as err:
-            result = 'error'
+            print(err)
+            result = err
             print("Connection whith user: " + self.__addr + " is broken")
             
         finally:
-            client_socket.send(result.encode())
+            client_socket.send(pickle.dumps(result))
             client_socket.close()
+            print("Data fron user: " + self.__addr + " received")
 
     def __accept_connection(self, server_socket):
         self.__client_socket, addr = server_socket.accept()
@@ -111,6 +145,16 @@ class consensus:
             t.start()
         except Exception as err:
             print(str(err))
+
+    def __filterBlocks(self, file):
+        if re.match(r'^data_file_[0-9]*\.block', file) is not None:
+            return 1
+        else:
+            return 0
+    
+    def __sortBlocksByNumber(self, inputStr):
+        filterStr = int(inputStr[10:-6])
+        return filterStr
 
 
 consensus = consensus()
