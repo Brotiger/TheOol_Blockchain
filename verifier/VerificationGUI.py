@@ -18,9 +18,20 @@ import webbrowser
 class Verification_window(QtWidgets.QMainWindow):
     
     Number = "num"
-    Li = 10
-    Of = 0
-    j = 1
+    Li = 10 # сколько пользователей
+    Of = 0 # отступ
+    First = 0 # далее идут id для каждой кнопки каждого из 10 приходящих пользователей (необходимо т.к. неверифицированные пользователи могут идти не по порядку)
+    Second = 0
+    Third = 0
+    Fourth = 0
+    Fifth = 0
+    Sixth = 0
+    Seventh = 0
+    Eighth = 0
+    Ninth = 0
+    Tenth = 0
+    j = 1 # значения кнопок погинатора отталкиваются от этого значения
+
     def __init__(self):
         super().__init__()
         self.setParams()
@@ -48,8 +59,8 @@ class Verification_window(QtWidgets.QMainWindow):
         self.Verification.slideButton5.clicked.connect(self.buttonSlideButton5)
 
     def setParams(self):
-        print(self.Li)
-        user_id_path = "./wallet/user_id.id"
+        # формирование запроса к серверу
+        user_id_path = "./verifier_info/user_id.id"
         postType = "/api/verification/getAll"
         httpObj = http.http()
 
@@ -67,6 +78,67 @@ class Verification_window(QtWidgets.QMainWindow):
         data["offset"] = self.Of
 
         response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
+        try:
+            self.First = int(response["data"][0]["id"])
+        except IndexError:
+            self.First = None
+        except KeyError:
+            self.First = None
+        try:
+            self.Second = int(response["data"][1]["id"])
+        except IndexError:
+            self.Second = None
+        except KeyError:
+            self.Second = None
+        try:
+            self.Third = int(response["data"][2]["id"])
+        except IndexError:
+            self.Third = None
+        except KeyError:
+            self.Third = None
+        try:
+            self.Fourth = int(response["data"][3]["id"])
+        except IndexError:
+            self.Fourth = None
+        except KeyError:
+            self.Fourth = None
+        try:
+            self.Fifth = int(response["data"][4]["id"])
+        except IndexError:
+            self.Fifth = None
+        except KeyError:
+            self.Fifth = None
+        try:
+            self.Sixth = int(response["data"][5]["id"])
+        except IndexError:
+            self.Sixth = None
+        except KeyError:
+            self.Sixth = None
+        try:
+            self.Seventh = int(response["data"][7]["id"])
+        except IndexError:
+            self.Seventh = None
+        except KeyError:
+            self.Seventh = None
+        try:
+            self.Eighth = int(response["data"][7]["id"])
+        except IndexError:
+            self.Eighth = None
+        except KeyError:
+            self.Eighth = None
+        try:
+            self.Ninth= int(response["data"][8]["id"])
+        except IndexError:
+            self.Ninth = None  
+        except KeyError: 
+            self.Ninth = None  
+        try:
+            self.Tenth = int(response["data"][9]["id"])
+        except IndexError:
+            self.Tenth = None 
+        except KeyError: 
+            self.Tenth = None 
+        
         i = 0
         self.Verification = Verification.Ui_Verification()
         self.Verification.setupUi(self)
@@ -74,6 +146,7 @@ class Verification_window(QtWidgets.QMainWindow):
         # Поле номера
         try:
             string = response["data"][i]["id"]
+            
             self.Verification.num1.setText(str(self.Of+1))
             i=i+1
         except IndexError:
@@ -345,7 +418,7 @@ class Verification_window(QtWidgets.QMainWindow):
         self.Verification.slideButton4.setText(str(self.j+3))
         self.Verification.slideButton5.setText(str(self.j+4))
         #self.setParams()
-        user_id_path = "./wallet/user_id.id"
+        user_id_path = "./verifier_info/user_id.id"
         postType = "/api/verification/getAll"
         httpObj = http.http()
 
@@ -363,7 +436,66 @@ class Verification_window(QtWidgets.QMainWindow):
         data["offset"] = self.Of
 
         response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
-        print(response)
+        try:
+            self.First = int(response["data"][0]["id"])
+        except IndexError:
+            self.First = None
+        except KeyError:
+            self.First = None
+        try:
+            self.Second = int(response["data"][1]["id"])
+        except IndexError:
+            self.Second = None
+        except KeyError:
+            self.Second = None
+        try:
+            self.Third = int(response["data"][2]["id"])
+        except IndexError:
+            self.Third = None
+        except KeyError:
+            self.Third = None
+        try:
+            self.Fourth = int(response["data"][3]["id"])
+        except IndexError:
+            self.Fourth = None
+        except KeyError:
+            self.Fourth = None
+        try:
+            self.Fifth = int(response["data"][4]["id"])
+        except IndexError:
+            self.Fifth = None
+        except KeyError:
+            self.Fifth = None
+        try:
+            self.Sixth = int(response["data"][5]["id"])
+        except IndexError:
+            self.Sixth = None
+        except KeyError:
+            self.Sixth = None
+        try:
+            self.Seventh = int(response["data"][7]["id"])
+        except IndexError:
+            self.Seventh = None
+        except KeyError:
+            self.Seventh = None
+        try:
+            self.Eighth = int(response["data"][7]["id"])
+        except IndexError:
+            self.Eighth = None
+        except KeyError:
+            self.Eighth = None
+        try:
+            self.Ninth= int(response["data"][8]["id"])
+        except IndexError:
+            self.Ninth = None  
+        except KeyError: 
+            self.Ninth = None  
+        try:
+            self.Tenth = int(response["data"][9]["id"])
+        except IndexError:
+            self.Tenth = None 
+        except KeyError: 
+            self.Tenth = None 
         i=0
         try:
             string = response["data"][i]["id"]
@@ -618,7 +750,383 @@ class Verification_window(QtWidgets.QMainWindow):
             self.Verification.lastName10.setText("")
         except KeyError:
             self.Verification.lastName9.setText("")
- 
+    
+    def getMaxPage(self):
+        user_id_path = "./verifier_info/user_id.id"
+        verifier_info_dir = "./verifier_info"
+        #Проверка на существование директории, если нету создать ее
+        if not os.path.exists(verifier_info_dir):
+            os.mkdir(verifier_info_dir)
+        data = {} 
+
+        httpObj = http.http()
+
+        if (not os.environ.get('VER_SERVER_IP')):
+            verServerIP = "127.0.0.1"
+        else:
+            verServerIP = os.environ.get('VER_SERVER_IP')
+        
+        with open(user_id_path, "r") as text_file:
+            data["user_id"] = int(text_file.read())
+
+        postType = "/api/verification/getCount"
+
+        response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)
+
+        return (int(response["data"]["count"]) // 10)
+
+    def buttonMaxRightClicked(self):
+        self.Verification.pushButton1.setStyleSheet("background-color: #E5E7F5")
+        self.Verification.pushButton2.setStyleSheet("background-color: #E5E7F5")
+        self.Verification.pushButton3.setStyleSheet("background-color: #E5E7F5")
+        self.Verification.pushButton4.setStyleSheet("background-color: #E5E7F5")
+        self.Verification.pushButton5.setStyleSheet("background-color: #E5E7F5")
+        self.Verification.pushButton6.setStyleSheet("background-color: #E5E7F5")
+        self.Verification.pushButton7.setStyleSheet("background-color: #E5E7F5")
+        self.Verification.pushButton8.setStyleSheet("background-color: #E5E7F5")
+        self.Verification.pushButton9.setStyleSheet("background-color: #E5E7F5")
+        self.Verification.pushButton10.setStyleSheet("background-color: #E5E7F5")
+        self.Of = self.getMaxPage()*10
+        self.j = self.getMaxPage()
+        self.Verification.slideButton1.setText(str(self.j))
+        self.Verification.slideButton2.setText(str(self.j+1))
+        self.Verification.slideButton3.setText(str(self.j+2))
+        self.Verification.slideButton4.setText(str(self.j+3))
+        self.Verification.slideButton5.setText(str(self.j+4))
+        #self.setParams()
+        user_id_path = "./verifier_info/user_id.id"
+        postType = "/api/verification/getAll"
+        httpObj = http.http()
+
+        if (not os.environ.get('VER_SERVER_IP')):
+            verServerIP = "127.0.0.1"
+        else:
+            verServerIP = os.environ.get('VER_SERVER_IP')
+        
+        data = {}
+        
+        with open(user_id_path, "r") as text_file:
+            data["user_id"] = int(text_file.read())
+        
+        data["limit"] = self.Li
+        data["offset"] = self.Of
+
+        response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
+        try:
+            self.First = int(response["data"][0]["id"])
+        except IndexError:
+            self.First = None
+        except KeyError:
+            self.First = None
+        try:
+            self.Second = int(response["data"][1]["id"])
+        except IndexError:
+            self.Second = None
+        except KeyError:
+            self.Second = None
+        try:
+            self.Third = int(response["data"][2]["id"])
+        except IndexError:
+            self.Third = None
+        except KeyError:
+            self.Third = None
+        try:
+            self.Fourth = int(response["data"][3]["id"])
+        except IndexError:
+            self.Fourth = None
+        except KeyError:
+            self.Fourth = None
+        try:
+            self.Fifth = int(response["data"][4]["id"])
+        except IndexError:
+            self.Fifth = None
+        except KeyError:
+            self.Fifth = None
+        try:
+            self.Sixth = int(response["data"][5]["id"])
+        except IndexError:
+            self.Sixth = None
+        except KeyError:
+            self.Sixth = None
+        try:
+            self.Seventh = int(response["data"][7]["id"])
+        except IndexError:
+            self.Seventh = None
+        except KeyError:
+            self.Seventh = None
+        try:
+            self.Eighth = int(response["data"][7]["id"])
+        except IndexError:
+            self.Eighth = None
+        except KeyError:
+            self.Eighth = None
+        try:
+            self.Ninth= int(response["data"][8]["id"])
+        except IndexError:
+            self.Ninth = None  
+        except KeyError: 
+            self.Ninth = None  
+        try:
+            self.Tenth = int(response["data"][9]["id"])
+        except IndexError:
+            self.Tenth = None 
+        except KeyError: 
+            self.Tenth = None 
+        i=0
+        try:
+            string = response["data"][i]["id"]
+            self.Verification.num1.setText(str(self.Of+1))
+            i=i+1
+        except IndexError:
+            self.Verification.num1.setText("")
+        except KeyError:
+            self.Verification.num1.setText("")
+
+        try:
+            string = response["data"][i]["id"]
+            self.Verification.num2.setText(str(self.Of+2))
+            i=i+1
+        except IndexError:
+            self.Verification.num2.setText("")
+        except KeyError:
+            self.Verification.num2.setText("")
+
+        try:
+            string = response["data"][i]["id"]
+            self.Verification.num3.setText(str(self.Of+3))
+            i=i+1
+        except IndexError:
+            self.Verification.num3.setText("")
+        except KeyError:
+            self.Verification.num3.setText("")
+
+        try:
+            string = response["data"][i]["id"]
+            self.Verification.num4.setText(str(self.Of+4))
+            i=i+1
+        except IndexError:
+            self.Verification.num4.setText("")
+        except KeyError:
+            self.Verification.num4.setText("")
+
+        try:
+            string = response["data"][i]["id"]
+            self.Verification.num5.setText(str(self.Of+5))
+            i=i+1
+        except IndexError:
+            self.Verification.num5.setText("")
+        except KeyError:
+            self.Verification.num5.setText("")
+
+        try:
+            string = response["data"][i]["id"]
+            self.Verification.num6.setText(str(self.Of+6))
+            i=i+1
+        except IndexError:
+            self.Verification.num6.setText("")
+        except KeyError:
+            self.Verification.num6.setText("")
+
+        try:
+            string = response["data"][i]["id"]
+            self.Verification.num7.setText(str(self.Of+7))
+            i=i+1
+        except IndexError:
+            self.Verification.num7.setText("")
+        except KeyError:
+            self.Verification.num7.setText("")
+
+        try:
+            string = response["data"][i]["id"]
+            self.Verification.num8.setText(str(self.Of+8))
+            i=i+1
+        except IndexError:
+            self.Verification.num8.setText("")
+        except KeyError:
+            self.Verification.num8.setText("")
+
+        try:
+            string = response["data"][i]["id"]
+            self.Verification.num9.setText(str(self.Of+9))
+            i=i+1
+        except IndexError:
+            self.Verification.num9.setText("")
+        except KeyError:
+            self.Verification.num9.setText("")
+
+        try:
+            string = response["data"][i]["id"]
+            self.Verification.num10.setText(str(self.Of+10))
+            i=i+1
+        except IndexError:
+            self.Verification.num10.setText("")
+        except KeyError:
+            self.Verification.num10.setText("")
+        # Поле имени
+        i = 0
+
+        try:
+            self.Verification.name1.setText(response["data"][i]["first_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.name1.setText("")
+        except KeyError:
+            self.Verification.name1.setText("")
+
+        try:
+            self.Verification.name2.setText(response["data"][i]["first_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.name2.setText("")
+        except KeyError:
+            self.Verification.name2.setText("")
+
+        try:
+            self.Verification.name3.setText(response["data"][i]["first_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.name3.setText("")
+        except KeyError:
+            self.Verification.name3.setText("")
+
+        try:
+            self.Verification.name4.setText(response["data"][i]["first_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.name4.setText("")
+        except KeyError:
+            self.Verification.name4.setText("")
+
+        try:
+            self.Verification.name5.setText(response["data"][i]["first_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.name5.setText("")
+        except KeyError:
+            self.Verification.name5.setText("")
+
+        try:
+            self.Verification.name6.setText(response["data"][i]["first_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.name6.setText("")
+        except KeyError:
+            self.Verification.name6.setText("")
+
+        try:
+            self.Verification.name7.setText(response["data"][i]["first_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.name7.setText("")
+        except KeyError:
+            self.Verification.name7.setText("")
+
+        try:
+            self.Verification.name8.setText(response["data"][i]["first_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.name8.setText("")
+        except KeyError:
+            self.Verification.name8.setText("")
+
+        try:
+            self.Verification.name9.setText(response["data"][i]["first_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.name9.setText("")
+        except KeyError:
+            self.Verification.name9.setText("")
+
+        try:
+            self.Verification.name10.setText(response["data"][i]["first_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.name10.setText("")
+        except KeyError:
+            self.Verification.name10.setText("")
+        
+        # Поле фамилии
+        i = 0
+        try:
+            self.Verification.lastName1.setText(response["data"][i]["last_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.lastName1.setText("")
+        except KeyError:
+            self.Verification.lastName1.setText("")
+
+        try:
+            self.Verification.lastName2.setText(response["data"][i]["last_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.lastName2.setText("")
+        except KeyError:
+            self.Verification.lastName2.setText("")
+
+        try:
+            self.Verification.lastName3.setText(response["data"][i]["last_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.lastName3.setText("")
+        except KeyError:
+            self.Verification.lastName3.setText("")
+
+        try:
+            self.Verification.lastName4.setText(response["data"][i]["last_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.lastName4.setText("")
+        except KeyError:
+            self.Verification.lastName4.setText("")
+
+        try:
+            self.Verification.lastName5.setText(response["data"][i]["last_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.lastName5.setText("")
+        except KeyError:
+            self.Verification.lastName5.setText("")
+
+        try:
+            self.Verification.lastName6.setText(response["data"][i]["last_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.lastName6.setText("")
+        except KeyError:
+            self.Verification.lastName6.setText("")
+
+        try:
+            self.Verification.lastName7.setText(response["data"][i]["last_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.lastName7.setText("")
+        except KeyError:
+            self.Verification.lastName7.setText("")
+
+        try:
+            self.Verification.lastName8.setText(response["data"][i]["last_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.lastName8.setText("")
+        except KeyError:
+            self.Verification.lastName8.setText("")
+
+        try:
+            self.Verification.lastName9.setText(response["data"][i]["last_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.lastName9.setText("")
+        except KeyError:
+            self.Verification.lastName9.setText("")
+
+        try:
+            self.Verification.lastName10.setText(response["data"][i]["last_name"])
+            i=i+1
+        except IndexError:
+            self.Verification.lastName10.setText("")
+        except KeyError:
+            self.Verification.lastName9.setText("")
+        
     def buttonRightClicked(self):
         self.Verification.pushButton1.setStyleSheet("background-color: #E5E7F5")
         self.Verification.pushButton2.setStyleSheet("background-color: #E5E7F5")
@@ -638,7 +1146,7 @@ class Verification_window(QtWidgets.QMainWindow):
         self.Verification.slideButton4.setText(str(self.j+3))
         self.Verification.slideButton5.setText(str(self.j+4))
         #self.setParams()
-        user_id_path = "./wallet/user_id.id"
+        user_id_path = "./verifier_info/user_id.id"
         postType = "/api/verification/getAll"
         httpObj = http.http()
 
@@ -656,7 +1164,66 @@ class Verification_window(QtWidgets.QMainWindow):
         data["offset"] = self.Of
 
         response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
-        print(response)
+        try:
+            self.First = int(response["data"][0]["id"])
+        except IndexError:
+            self.First = None
+        except KeyError:
+            self.First = None
+        try:
+            self.Second = int(response["data"][1]["id"])
+        except IndexError:
+            self.Second = None
+        except KeyError:
+            self.Second = None
+        try:
+            self.Third = int(response["data"][2]["id"])
+        except IndexError:
+            self.Third = None
+        except KeyError:
+            self.Third = None
+        try:
+            self.Fourth = int(response["data"][3]["id"])
+        except IndexError:
+            self.Fourth = None
+        except KeyError:
+            self.Fourth = None
+        try:
+            self.Fifth = int(response["data"][4]["id"])
+        except IndexError:
+            self.Fifth = None
+        except KeyError:
+            self.Fifth = None
+        try:
+            self.Sixth = int(response["data"][5]["id"])
+        except IndexError:
+            self.Sixth = None
+        except KeyError:
+            self.Sixth = None
+        try:
+            self.Seventh = int(response["data"][7]["id"])
+        except IndexError:
+            self.Seventh = None
+        except KeyError:
+            self.Seventh = None
+        try:
+            self.Eighth = int(response["data"][7]["id"])
+        except IndexError:
+            self.Eighth = None
+        except KeyError:
+            self.Eighth = None
+        try:
+            self.Ninth= int(response["data"][8]["id"])
+        except IndexError:
+            self.Ninth = None  
+        except KeyError: 
+            self.Ninth = None  
+        try:
+            self.Tenth = int(response["data"][9]["id"])
+        except IndexError:
+            self.Tenth = None 
+        except KeyError: 
+            self.Tenth = None 
         i=0
         try:
             string = response["data"][i]["id"]
@@ -932,7 +1499,7 @@ class Verification_window(QtWidgets.QMainWindow):
             self.Verification.slideButton4.setText(str(self.j+3))
             self.Verification.slideButton5.setText(str(self.j+4))
             #self.setParams()
-            user_id_path = "./wallet/user_id.id"
+            user_id_path = "./verifier_info/user_id.id"
             postType = "/api/verification/getAll"
             httpObj = http.http()
 
@@ -950,7 +1517,66 @@ class Verification_window(QtWidgets.QMainWindow):
             data["offset"] = self.Of
 
             response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
-            print(response)
+            try:
+                self.First = int(response["data"][0]["id"])
+            except IndexError:
+                self.First = None
+            except KeyError:
+                self.First = None
+            try:
+                self.Second = int(response["data"][1]["id"])
+            except IndexError:
+                self.Second = None
+            except KeyError:
+                self.Second = None
+            try:
+                self.Third = int(response["data"][2]["id"])
+            except IndexError:
+                self.Third = None
+            except KeyError:
+                self.Third = None
+            try:
+                self.Fourth = int(response["data"][3]["id"])
+            except IndexError:
+                self.Fourth = None
+            except KeyError:
+                self.Fourth = None
+            try:
+                self.Fifth = int(response["data"][4]["id"])
+            except IndexError:
+                self.Fifth = None
+            except KeyError:
+                self.Fifth = None
+            try:
+                self.Sixth = int(response["data"][5]["id"])
+            except IndexError:
+                self.Sixth = None
+            except KeyError:
+                self.Sixth = None
+            try:
+                self.Seventh = int(response["data"][7]["id"])
+            except IndexError:
+                self.Seventh = None
+            except KeyError:
+                self.Seventh = None
+            try:
+                self.Eighth = int(response["data"][7]["id"])
+            except IndexError:
+                self.Eighth = None
+            except KeyError:
+                self.Eighth = None
+            try:
+                self.Ninth= int(response["data"][8]["id"])
+            except IndexError:
+                self.Ninth = None  
+            except KeyError: 
+                self.Ninth = None  
+            try:
+                self.Tenth = int(response["data"][9]["id"])
+            except IndexError:
+                self.Tenth = None 
+            except KeyError: 
+                self.Tenth = None 
             i=0
             try:
                 string = response["data"][i]["id"]
@@ -1042,7 +1668,7 @@ class Verification_window(QtWidgets.QMainWindow):
             except KeyError:
                 self.Verification.num10.setText("")
                 # Поле имени
-                i = 0
+            i = 0
 
             try:
                 self.Verification.name1.setText(response["data"][i]["first_name"])
@@ -1211,7 +1837,7 @@ class Verification_window(QtWidgets.QMainWindow):
 
             self.Verification.pushButton1.setStyleSheet("background-color: #E5E7F5")
 
-            user_id_path = "./wallet/user_id.id"
+            user_id_path = "./verifier_info/user_id.id"
             
             postType = "/api/verification/getOne"
 
@@ -1224,24 +1850,23 @@ class Verification_window(QtWidgets.QMainWindow):
 
             data = {}
 
-            data["id"] = self.Of+1
+            data["id"] = self.First
 
             with open(user_id_path, "r") as text_file:
                 data["user_id"] = int(text_file.read())
 
-
+            
             response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
             
-            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Of+1)
+            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.First)
         except KeyError:
             self.fade(self.Verification.pushButton1)  
 
     def button2Clicked(self):
         try:
-
             self.Verification.pushButton2.setStyleSheet("background-color: #2e3436")
 
-            user_id_path = "./wallet/user_id.id"
+            user_id_path = "./verifier_info/user_id.id"
             
             postType = "/api/verification/getOne"
 
@@ -1253,23 +1878,24 @@ class Verification_window(QtWidgets.QMainWindow):
             httpObj = http.http()
 
             data = {}
-            data["id"] = self.Of+2
+            data["id"] = self.Second
 
             with open(user_id_path, "r") as text_file:
                 data["user_id"] = int(text_file.read())
 
             response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
         
-            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Of+2)   
+            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Second)   
         except KeyError:
             self.fade(self.Verification.pushButton2)      
 
     def button3Clicked(self):
+        z=0
         try:
 
             self.Verification.pushButton3.setStyleSheet("background-color: #2e3436")
 
-            user_id_path = "./wallet/user_id.id"
+            user_id_path = "./verifier_info/user_id.id"
             
             postType = "/api/verification/getOne"
 
@@ -1281,14 +1907,14 @@ class Verification_window(QtWidgets.QMainWindow):
             httpObj = http.http()
 
             data = {}
-            data["id"] = self.Of+3
+            data["id"] = self.Third
 
             with open(user_id_path, "r") as text_file:
                 data["user_id"] = int(text_file.read())
 
             response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
         
-            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Of+3)   
+            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Third)   
         except KeyError:
             self.fade(self.Verification.pushButton3)      
 
@@ -1297,7 +1923,7 @@ class Verification_window(QtWidgets.QMainWindow):
 
             self.Verification.pushButton4.setStyleSheet("background-color: #2e3436")
 
-            user_id_path = "./wallet/user_id.id"
+            user_id_path = "./verifier_info/user_id.id"
             
             postType = "/api/verification/getOne"
 
@@ -1309,14 +1935,14 @@ class Verification_window(QtWidgets.QMainWindow):
             httpObj = http.http()
 
             data = {}
-            data["id"] = self.Of+4
+            data["id"] = self.Fourth
 
             with open(user_id_path, "r") as text_file:
                 data["user_id"] = int(text_file.read())
 
             response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
         
-            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Of+4)   
+            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Fourth)   
         except KeyError:
             self.fade(self.Verification.pushButton4)
 
@@ -1325,7 +1951,7 @@ class Verification_window(QtWidgets.QMainWindow):
 
             self.Verification.pushButton5.setStyleSheet("background-color: #2e3436")
 
-            user_id_path = "./wallet/user_id.id"
+            user_id_path = "./verifier_info/user_id.id"
             
             postType = "/api/verification/getOne"
 
@@ -1337,14 +1963,14 @@ class Verification_window(QtWidgets.QMainWindow):
             httpObj = http.http()
 
             data = {}
-            data["id"] = self.Of+5
+            data["id"] = self.Fifth
 
             with open(user_id_path, "r") as text_file:
                 data["user_id"] = int(text_file.read())
 
             response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
         
-            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Of+5)   
+            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Fifth)   
         except KeyError:
             self.fade(self.Verification.pushButton5)
 
@@ -1353,7 +1979,7 @@ class Verification_window(QtWidgets.QMainWindow):
 
             self.Verification.pushButton6.setStyleSheet("background-color: #2e3436")
             
-            user_id_path = "./wallet/user_id.id"
+            user_id_path = "./verifier_info/user_id.id"
             
             postType = "/api/verification/getOne"
 
@@ -1365,23 +1991,24 @@ class Verification_window(QtWidgets.QMainWindow):
             httpObj = http.http()
 
             data = {}
-            data["id"] = self.Of+6
+            data["id"] = self.Sixth
 
             with open(user_id_path, "r") as text_file:
                 data["user_id"] = int(text_file.read())
 
             response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
         
-            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Of+6)   
+            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Sixth)   
         except KeyError:
             self.fade(self.Verification.pushButton6)
 
     def button7Clicked(self):
+        z=0
         try:
 
             self.Verification.pushButton7.setStyleSheet("background-color: #2e3436")
 
-            user_id_path = "./wallet/user_id.id"
+            user_id_path = "./verifier_info/user_id.id"
             
             postType = "/api/verification/getOne"
 
@@ -1393,14 +2020,14 @@ class Verification_window(QtWidgets.QMainWindow):
             httpObj = http.http()
 
             data = {}
-            data["id"] = self.Of+7
+            data["id"] = self.Seventh
 
             with open(user_id_path, "r") as text_file:
                 data["user_id"] = int(text_file.read())
 
             response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
         
-            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Of+7)   
+            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Seventh)   
         except KeyError:
             self.fade(self.Verification.pushButton7)
 
@@ -1409,7 +2036,7 @@ class Verification_window(QtWidgets.QMainWindow):
 
             self.Verification.pushButton8.setStyleSheet("background-color: #2e3436")
 
-            user_id_path = "./wallet/user_id.id"
+            user_id_path = "./verifier_info/user_id.id"
             
             postType = "/api/verification/getOne"
 
@@ -1421,14 +2048,14 @@ class Verification_window(QtWidgets.QMainWindow):
             httpObj = http.http()
 
             data = {}
-            data["id"] = self.Of+8
+            data["id"] = self.Eighth
 
             with open(user_id_path, "r") as text_file:
                 data["user_id"] = int(text_file.read())
 
             response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
         
-            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Of+8)   
+            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Eighth)   
         except KeyError:
             self.fade(self.Verification.pushButton8)          
 
@@ -1436,7 +2063,7 @@ class Verification_window(QtWidgets.QMainWindow):
         try:
             self.Verification.pushButton9.setStyleSheet("background-color: #2e3436")
 
-            user_id_path = "./wallet/user_id.id"
+            user_id_path = "./verifier_info/user_id.id"
             
             postType = "/api/verification/getOne"
 
@@ -1448,14 +2075,14 @@ class Verification_window(QtWidgets.QMainWindow):
             httpObj = http.http()
 
             data = {}
-            data["id"] = self.Of+9
+            data["id"] = self.Ninth
 
             with open(user_id_path, "r") as text_file:
                 data["user_id"] = int(text_file.read())
 
             response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
         
-            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Of+9)   
+            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Ninth)   
         except KeyError:
             self.fade(self.Verification.pushButton9)
 
@@ -1464,7 +2091,7 @@ class Verification_window(QtWidgets.QMainWindow):
 
             self.Verification.pushButton10.setStyleSheet("background-color: #2e3436")
 
-            user_id_path = "./wallet/user_id.id"
+            user_id_path = "./verifier_info/user_id.id"
             
             postType = "/api/verification/getOne"
 
@@ -1476,14 +2103,14 @@ class Verification_window(QtWidgets.QMainWindow):
             httpObj = http.http()
 
             data = {}
-            data["id"] = self.Of+10
+            data["id"] = self.Tenth
 
             with open(user_id_path, "r") as text_file:
                 data["user_id"] = int(text_file.read())
 
             response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
         
-            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Of+10)   
+            Personal_Card(response["data"]["first_name"],response["data"]["last_name"],response["data"]["middle_name"],response["data"]["address"],response["data"]["country_of_residence"],response["data"]["country_and_place_of_birth"],response["data"]["nationality"],response["data"]["date_of_birth"],response["data"]["email"],response["data"]["phone"],response["data"]["zip_code"],response["data"]["file"],self.Tenth)   
         except KeyError:
             self.fade(self.Verification.pushButton10)
 
@@ -1499,7 +2126,7 @@ class Verification_window(QtWidgets.QMainWindow):
         self.Verification.pushButton9.setStyleSheet("background-color: #E5E7F5")
         self.Verification.pushButton10.setStyleSheet("background-color: #E5E7F5")
         self.Of=self.j*10-10
-        user_id_path = "./wallet/user_id.id"
+        user_id_path = "./verifier_info/user_id.id"
         postType = "/api/verification/getAll"
         httpObj = http.http()
 
@@ -1517,7 +2144,16 @@ class Verification_window(QtWidgets.QMainWindow):
         data["offset"] = self.Of
 
         response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
-        print(response)
+        self.First = int(response["data"][0]["id"])
+        self.Second = int(response["data"][1]["id"])
+        self.Third = int(response["data"][2]["id"])
+        self.Fourth = int(response["data"][3]["id"])
+        self.Fifth = int(response["data"][4]["id"])
+        self.Sixth = int(response["data"][5]["id"])
+        self.Seventh = int(response["data"][6]["id"])
+        self.Eighth = int(response["data"][7]["id"])
+        self.Ninth = int(response["data"][8]["id"])
+        self.Tenth = int(response["data"][9]["id"])
         i=0
         try:
             self.Verification.num1.setText(str(response["data"][i]["id"]))
@@ -1777,7 +2413,7 @@ class Verification_window(QtWidgets.QMainWindow):
         self.Verification.pushButton9.setStyleSheet("background-color: #E5E7F5")
         self.Verification.pushButton10.setStyleSheet("background-color: #E5E7F5")
         self.Of=(self.j+1)*10-10
-        user_id_path = "./wallet/user_id.id"
+        user_id_path = "./verifier_info/user_id.id"
         postType = "/api/verification/getAll"
         httpObj = http.http()
 
@@ -1795,7 +2431,16 @@ class Verification_window(QtWidgets.QMainWindow):
         data["offset"] = self.Of
 
         response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
-        print(response)
+        self.First = int(response["data"][0]["id"])
+        self.Second = int(response["data"][1]["id"])
+        self.Third = int(response["data"][2]["id"])
+        self.Fourth = int(response["data"][3]["id"])
+        self.Fifth = int(response["data"][4]["id"])
+        self.Sixth = int(response["data"][5]["id"])
+        self.Seventh = int(response["data"][6]["id"])
+        self.Eighth = int(response["data"][7]["id"])
+        self.Ninth = int(response["data"][8]["id"])
+        self.Tenth = int(response["data"][9]["id"])
         i=0
         try:
             self.Verification.num1.setText(str(response["data"][i]["id"]))
@@ -2053,7 +2698,7 @@ class Verification_window(QtWidgets.QMainWindow):
         self.Verification.pushButton9.setStyleSheet("background-color: #E5E7F5")
         self.Verification.pushButton10.setStyleSheet("background-color: #E5E7F5")
         self.Of=(self.j+2)*10-10
-        user_id_path = "./wallet/user_id.id"
+        user_id_path = "./verifier_info/user_id.id"
         postType = "/api/verification/getAll"
         httpObj = http.http()
 
@@ -2071,7 +2716,16 @@ class Verification_window(QtWidgets.QMainWindow):
         data["offset"] = self.Of
 
         response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
-        print(response)
+        self.First = int(response["data"][0]["id"])
+        self.Second = int(response["data"][1]["id"])
+        self.Third = int(response["data"][2]["id"])
+        self.Fourth = int(response["data"][3]["id"])
+        self.Fifth = int(response["data"][4]["id"])
+        self.Sixth = int(response["data"][5]["id"])
+        self.Seventh = int(response["data"][6]["id"])
+        self.Eighth = int(response["data"][7]["id"])
+        self.Ninth = int(response["data"][8]["id"])
+        self.Tenth = int(response["data"][9]["id"])
         i=0
         try:
             self.Verification.num1.setText(str(response["data"][i]["id"]))
@@ -2329,7 +2983,7 @@ class Verification_window(QtWidgets.QMainWindow):
         self.Verification.pushButton9.setStyleSheet("background-color: #E5E7F5")
         self.Verification.pushButton10.setStyleSheet("background-color: #E5E7F5")
         self.Of=(self.j+3)*10-10
-        user_id_path = "./wallet/user_id.id"
+        user_id_path = "./verifier_info/user_id.id"
         postType = "/api/verification/getAll"
         httpObj = http.http()
 
@@ -2347,7 +3001,16 @@ class Verification_window(QtWidgets.QMainWindow):
         data["offset"] = self.Of
 
         response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
-        print(response)
+        self.First = int(response["data"][0]["id"])
+        self.Second = int(response["data"][1]["id"])
+        self.Third = int(response["data"][2]["id"])
+        self.Fourth = int(response["data"][3]["id"])
+        self.Fifth = int(response["data"][4]["id"])
+        self.Sixth = int(response["data"][5]["id"])
+        self.Seventh = int(response["data"][6]["id"])
+        self.Eighth = int(response["data"][7]["id"])
+        self.Ninth = int(response["data"][8]["id"])
+        self.Tenth = int(response["data"][9]["id"])
         i=0
         try:
             self.Verification.num1.setText(str(response["data"][i]["id"]))
@@ -2605,7 +3268,7 @@ class Verification_window(QtWidgets.QMainWindow):
         self.Verification.pushButton9.setStyleSheet("background-color: #E5E7F5")
         self.Verification.pushButton10.setStyleSheet("background-color: #E5E7F5")
         self.Of=(self.j+4)*10-10
-        user_id_path = "./wallet/user_id.id"
+        user_id_path = "./verifier_info/user_id.id"
         postType = "/api/verification/getAll"
         httpObj = http.http()
 
@@ -2623,7 +3286,16 @@ class Verification_window(QtWidgets.QMainWindow):
         data["offset"] = self.Of
 
         response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)    
-        print(response)
+        self.First = int(response["data"][0]["id"])
+        self.Second = int(response["data"][1]["id"])
+        self.Third = int(response["data"][2]["id"])
+        self.Fourth = int(response["data"][3]["id"])
+        self.Fifth = int(response["data"][4]["id"])
+        self.Sixth = int(response["data"][5]["id"])
+        self.Seventh = int(response["data"][6]["id"])
+        self.Eighth = int(response["data"][7]["id"])
+        self.Ninth = int(response["data"][8]["id"])
+        self.Tenth = int(response["data"][9]["id"])
         i=0
         try:
             self.Verification.num1.setText(str(response["data"][i]["id"]))
@@ -2930,7 +3602,7 @@ class Personal_Card(QtWidgets.QMainWindow):
 
     def verifyButton(self):
 
-        user_id_path = "./wallet/user_id.id"
+        user_id_path = "./verifier_info/user_id.id"
             
         postType = "/api/verification/move"
 
@@ -2949,6 +3621,8 @@ class Personal_Card(QtWidgets.QMainWindow):
             data["user_id"] = int(text_file.read())
 
         response = httpObj.sendData("http://" + verServerIP + ":80" + postType,data)   
+
+        self.close()
         
 
 

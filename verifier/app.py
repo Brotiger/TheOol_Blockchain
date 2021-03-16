@@ -6,7 +6,10 @@ import json
 
 def main():
     user_id_path = "./verifier_info/user_id.id"
-
+    verifier_info_dir = "./verifier_info"
+    #Проверка на существование директории, если нету создать ее
+    if not os.path.exists(verifier_info_dir):
+        os.mkdir(verifier_info_dir)
     httpObj = http.http()
 
     if (not os.environ.get('VER_SERVER_IP')):

@@ -34,8 +34,8 @@ class GUIWindow(QtWidgets.QMainWindow):
         self.data = {}
         sender = self.sender()
         self.sysInput()
-        wallet_priv = "./wallet/client_rsa.priv"
-        wallet_pub = "./wallet/client_rsa.pub"
+        wallet_priv = "./wallet/rsa.priv"
+        wallet_pub = "./wallet/rsa.pub"
         if (not os.environ.get('VER_SERVER_IP')):
             verServerIP = "127.0.0.1"
         else:
@@ -66,7 +66,6 @@ class GUIWindow(QtWidgets.QMainWindow):
         if(response["success"] == False):
             os.remove(wallet_priv)
             os.remove(wallet_pub)                              
-        print(response)
 
         try:
             if(response["errors"]["email"]!=None):
@@ -119,11 +118,8 @@ class GUIWindow(QtWidgets.QMainWindow):
         #self.close()
 
         
-# Разобраться с форматом записи (пдф, заглавные буквы), сделать обработку ошибок (Скооперироваться с Димой)
 # уточнить по поводу номера телефона (формат записи , инт неподходит для записи типа: +7..........)
-# разобраться с  датой и LCD
 
-# автоматизировать процесс проверки
 # в блоке переменным присваиваются значения полей, затем на необхоимых к заполнению полях происходит проверка, если они незаполнены они выделяются красным
 # метка времени для даты рождения
     def sysInput(self):
